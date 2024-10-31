@@ -324,14 +324,14 @@ class StreamParser(private val parser: Parser) {
 
             // drain the current queue before stepping to get more
             if (!emitQueue.isEmpty()) {
-                next = emitQueue.removeFirst()
+                next = emitQueue.removeAt(0)
                 return
             }
 
             // step the parser, which will hit the node listeners to add to the queue:
             while (treeBuilder.stepParser()) {
                 if (!emitQueue.isEmpty()) {
-                    next = emitQueue.removeFirst()
+                    next = emitQueue.removeAt(0)
                     return
                 }
             }
