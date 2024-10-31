@@ -827,7 +827,7 @@ public abstract class Node protected constructor() : KCloneable<Node> {
         val nodesToProcess: LinkedList<Node> = mutableListOf()
         nodesToProcess.add(thisClone)
         while (nodesToProcess.isNotEmpty()) {
-            val currParent: Node = nodesToProcess.removeFirst()
+            val currParent: Node = nodesToProcess.removeAt(0)
             val size = currParent.childNodeSize()
             for (i in 0 until size) {
                 val childNodes = currParent.ensureChildNodes()

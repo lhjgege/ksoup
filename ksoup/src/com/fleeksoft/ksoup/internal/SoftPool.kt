@@ -22,7 +22,7 @@ class SoftPool<T>(private val initializer: () -> T) {
     fun borrow(): T {
         val stack: ArrayDeque<T> = stack
         if (!stack.isEmpty()) {
-            return stack.removeFirst()
+            return stack.removeAt(0)
         }
         return initializer()
     }
