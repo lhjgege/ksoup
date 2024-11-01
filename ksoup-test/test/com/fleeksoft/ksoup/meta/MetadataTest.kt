@@ -34,7 +34,7 @@ class MetadataTest {
     }
 
     @Test
-    fun testParseMetaDataFromSourceReader() {
+    fun testParseMetaDataFromInputStream() {
         val metaData = Ksoup.parseMetaData(html.byteInputStream(), "https://example.com")
 
         assertMetaData(metaData)
