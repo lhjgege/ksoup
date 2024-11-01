@@ -72,10 +72,6 @@ object TestHelper {
         return bytes.uncompress(GZIP).inputStream()
     }
 
-    fun dataToStream(data: String, charset: String): InputStream {
-        return data.toByteArray(Charsets.forName(charset)).inputStream()
-    }
-
     suspend fun parseResource(resourceName: String, baseUri: String = "", charsetName: String? = null): Document {
         return if (!canReadResourceFile() || (!isGzipSupported() && (resourceName.endsWith(".gz") || resourceName.endsWith(".z")))) {
             val input = readResource(resourceName)

@@ -1,6 +1,7 @@
 package com.fleeksoft.ksoup
 
 import com.fleeksoft.ksoup.helper.DataUtil
+import com.fleeksoft.ksoup.internal.ControllableInputStream
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.parser.Parser
 import kotlinx.coroutines.test.runTest
@@ -69,7 +70,7 @@ class DataUtilTestJvm {
             inputStream(secondPart),
         )
         val doc: Document = DataUtil.parseInputStream(
-            input = sequenceStream,
+            input = ControllableInputStream.wrap(sequenceStream, 0),
             charsetName = null,
             baseUri = "",
             parser = Parser.htmlParser(),

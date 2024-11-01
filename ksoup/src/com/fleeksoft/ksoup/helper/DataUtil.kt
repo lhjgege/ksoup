@@ -4,6 +4,7 @@ import com.fleeksoft.charset.Charset
 import com.fleeksoft.io.*
 import com.fleeksoft.ksoup.exception.IllegalCharsetNameException
 import com.fleeksoft.ksoup.exception.UncheckedIOException
+import com.fleeksoft.ksoup.internal.ControllableInputStream
 import com.fleeksoft.ksoup.internal.StringUtil
 import com.fleeksoft.ksoup.nodes.Comment
 import com.fleeksoft.ksoup.nodes.Document
@@ -34,15 +35,10 @@ public object DataUtil {
      * @param parser alternate [parser][Parser.xmlParser] to use.
      * @return Document
      */
-    public fun load(
-        input: InputStream,
-        baseUri: String,
-        charsetName: String? = null,
-        parser: Parser = Parser.htmlParser(),
-    ): Document {
+    public fun load(input: InputStream, baseUri: String, charsetName: String? = null, parser: Parser = Parser.htmlParser()): Document {
         // TODO: replace input with ControllableInputStream
         return parseInputStream(
-            input = input,
+            input = ControllableInputStream.wrap(input = input, maxSize = 0),
             baseUri = baseUri,
             charsetName = charsetName,
             parser = parser
@@ -61,26 +57,25 @@ public object DataUtil {
      * @param parser alternate [parser][Parser.xmlParser] to use.
      *
      * @return Document
-     * @throws IOException on IO error
+     * @throws com.fleeksoft.io.exception.IOException on IO error
      */
     fun streamParser(input: InputStream, baseUri: String, charset: Charset?, parser: Parser): StreamParser {
         val streamer = StreamParser(parser)
         val charsetName: String? = charset?.name()
-        val charsetDoc: CharsetDoc = detectCharset(input, baseUri, charsetName, parser)
+        val charsetDoc: CharsetDoc =
+            detectCharset(ControllableInputStream.wrap(input = input, maxSize = 0), baseUri, charsetName, parser, fromStreamer = true)
 
-        val reader = charsetDoc.input.bufferedReader(charsetDoc.charset)
+        val reader = charsetDoc.input.reader(charsetDoc.charset).buffered()
         streamer.parse(reader, baseUri) // initializes the parse and the document, but does not step() it
 
         return streamer
     }
 
-    fun parseInputStream(input: InputStream, baseUri: String, charsetName: String?, parser: Parser): Document {
-        // TODO: replace input with ControllableInputStream
+    fun parseInputStream(input: ControllableInputStream, baseUri: String, charsetName: String?, parser: Parser): Document {
         val doc: Document
         var charsetDoc: CharsetDoc? = null
         try {
-            charsetDoc =
-                detectCharset(input = input, baseUri = baseUri, charsetName = charsetName, parser = parser)
+            charsetDoc = detectCharset(input = input, baseUri = baseUri, charsetName = charsetName, parser = parser)
             doc = parseInputStream(charsetDoc = charsetDoc, baseUri = baseUri, parser = parser)
         } finally {
             input.close()
@@ -97,10 +92,11 @@ public object DataUtil {
 
 
     private fun detectCharset(
-        input: InputStream,
+        input: ControllableInputStream,
         baseUri: String,
         charsetName: String?,
-        parser: Parser
+        parser: Parser,
+        fromStreamer: Boolean = false
     ): CharsetDoc {
         var effectiveCharsetName: String? = charsetName
 
@@ -112,16 +108,19 @@ public object DataUtil {
         if (bomCharset != null) effectiveCharsetName = bomCharset
 
         if (effectiveCharsetName == null) { // read ahead and determine from meta. safe first parse as UTF-8
-            // @TODO:// implement it limit the max reading size
-//            input.max(firstReadBufferSize)
+            val origMax = input.max()
+            input.max(firstReadBufferSize)
             input.mark(firstReadBufferSize)
+            input.allowClose(false) // ignores closes during parse, in case we need to rewind
             try {
                 val reader: Reader = input.reader(Charsets.UTF8)
                 doc = parser.parseInput(reader, baseUri)
                 input.reset()
-//                input.max(origMax); // reset for a full read if required // @TODO implement it
+                input.max(origMax) // reset for a full read if required
             } catch (e: UncheckedIOException) {
                 throw e
+            } finally {
+                input.allowClose(true)
             }
             // look for <meta http-equiv="Content-Type" content="text/html;charset=gb2312"> or HTML5 <meta charset="gb2312">
             val metaElements: Elements = doc.select("meta[http-equiv=content-type], meta[charset]")
@@ -155,12 +154,13 @@ public object DataUtil {
                 foundCharset = foundCharset.trim { it <= ' ' }.replace("[\"']".toRegex(), "")
                 effectiveCharsetName = foundCharset
 //                if can't change charset don't try other
-                if (Charsets.isOnlyUtf8 && input.available() <= 0) {
+                if (Charsets.isOnlyUtf8 && input.available() <= 0 && !fromStreamer) {
                     input.close()
                 } else {
                     doc = null
                 }
-            } else if (input.available() <= 0) { // if we have read fully, and the charset was correct, keep that current parse
+            } else if (input.baseReadFully() && !fromStreamer) { // if we have read fully, and the charset was correct, keep that current parse
+                // but don't close input in streamer
                 input.close()
             } else {
                 doc = null
@@ -247,11 +247,11 @@ public object DataUtil {
         return StringUtil.releaseBuilder(mime)
     }
 
-    private fun detectCharsetFromBom(input: InputStream): String? {
+    private fun detectCharsetFromBom(input: ControllableInputStream): String? {
         val bom = ByteArray(4)
         input.mark(bom.size)
         input.read(bom, 0, bom.size)
-        input.reset();
+        input.reset()
 
         // 16 and 32 decoders consume the BOM to determine be/le; utf-8 should be consumed here
         if (bom[0].toInt() == 0x00 && bom[1].toInt() == 0x00 && bom[2] == 0xFE.toByte() && bom[3] == 0xFF.toByte()) { // BE
@@ -271,5 +271,9 @@ public object DataUtil {
             return "UTF-8"
         }
         return null
+    }
+
+    fun readToByteBuffer(input: InputStream, maxSize: Int): ByteBuffer {
+        return ControllableInputStream.readToByteBuffer(input, maxSize)
     }
 }

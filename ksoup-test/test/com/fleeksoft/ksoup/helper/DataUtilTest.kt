@@ -2,13 +2,14 @@ package com.fleeksoft.ksoup.helper
 
 import com.fleeksoft.charset.Charsets
 import com.fleeksoft.charset.toByteArray
+import com.fleeksoft.io.InputStream
 import com.fleeksoft.io.byteInputStream
 import com.fleeksoft.io.inputStream
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.TestHelper
+import com.fleeksoft.ksoup.internal.ControllableInputStream
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.parser.Parser
-import com.fleeksoft.ksoup.ported.toSourceFile
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
 
@@ -39,11 +40,15 @@ class DataUtilTest {
         assertEquals("UTF-8", DataUtil.getCharsetFromContentType("text/html; charset='UTF-8'"))
     }
 
+    private fun stream(data: String, charset: String = "UTF-8"): ControllableInputStream {
+        return ControllableInputStream.wrap(data.byteInputStream(Charsets.forName(charset)), 0);
+    }
+
     @Test
     fun discardsSpuriousByteOrderMark() {
         val html = "\uFEFF<html><head><title>One</title></head><body>Two</body></html>"
         val doc: Document = DataUtil.parseInputStream(
-            input = html.byteInputStream(),
+            input = stream(html),
             baseUri = "http://foo.com/",
             charsetName = "UTF-8",
             parser = Parser.htmlParser(),
@@ -55,7 +60,7 @@ class DataUtilTest {
     fun discardsSpuriousByteOrderMarkWhenNoCharsetSet() {
         val html = "\uFEFF<html><head><title>One</title></head><body>Two</body></html>"
         val doc: Document = DataUtil.parseInputStream(
-            input = html.byteInputStream(),
+            input = stream(html),
             baseUri = "http://foo.com/",
             charsetName = null,
             parser = Parser.htmlParser(),
@@ -105,7 +110,7 @@ class DataUtilTest {
         val html = "<html><head><meta charset=iso-8></head><body></body></html>"
         val doc: Document =
             DataUtil.parseInputStream(
-                input = html.byteInputStream(),
+                input = stream(html),
                 baseUri = "http://example.com",
                 charsetName = null,
                 parser = Parser.htmlParser(),
@@ -131,7 +136,7 @@ class DataUtilTest {
                     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=euc-kr\">" +
                     "</head><body>한국어</body></html>"
         val doc: Document = DataUtil.parseInputStream(
-            input = TestHelper.dataToStream(data = html, charset = "euc-kr"),
+            input = stream(data = html, charset = "euc-kr"),
             baseUri = "http://example.com",
             charsetName = null,
             parser = Parser.htmlParser(),
@@ -146,7 +151,7 @@ class DataUtilTest {
                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=koi8-u\">" +
                 "</head><body>Übergrößenträger</body></html>"
         val document = DataUtil.parseInputStream(
-            input = TestHelper.dataToStream(data = html, charset = "iso-8859-1"),
+            input = stream(data = html, charset = "iso-8859-1"),
             baseUri = "http://example.com",
             charsetName = null,
             parser = Parser.htmlParser(),
@@ -154,6 +159,8 @@ class DataUtilTest {
 
         assertEquals("Übergrößenträger", document.body().text())
     }
+
+    // TODO: add parseSequenceInputStream test
 
     @Test
     fun supportsBOMinFiles() = runTest {
@@ -340,24 +347,6 @@ class DataUtilTest {
     }
 
     @Test
-    fun handlesChunkedInputStream() = runTest {
-        if (!TestHelper.isGzipSupported()) {
-//            gzip not supported for this
-            return@runTest
-        }
-        val resourceName = "htmltests/large.html.gz"
-        val resourceFile = TestHelper.getResourceAbsolutePath(resourceName)
-        val inputFile = resourceFile.toSourceFile()
-        val input: String = TestHelper.readResourceAsString(resourceName)
-
-        val expected = Ksoup.parse(input, "https://example.com")
-        val doc: Document = Ksoup.parseFile(inputFile, baseUri = "https://example.com", charsetName = null)
-
-        println("""docSize: ${doc.toString().length}, expectedSize: ${expected.toString().length}""")
-        assertTrue(doc.hasSameValue(expected))
-    }
-
-    @Test
     fun testStringVsSourceReaderParse() = runTest {
         val input: String = TestHelper.readResourceAsString("htmltests/large.html.gz")
 
@@ -369,10 +358,41 @@ class DataUtilTest {
     }
 
     @Test
+    fun handlesChunkedInputStream() = runTest {
+        val resourceName = "htmltests/large.html.gz"
+        val input = TestHelper.readResourceAsString(resourceName)
+        val stream = VaryingReadInputStream(input.byteInputStream())
+
+        val expected = TestHelper.parseResource(resourceName, baseUri = "https://example.com", charsetName = null)
+        val doc = Ksoup.parse(input = stream, baseUri = "https://example.com", charsetName = null)
+
+        assertTrue(doc.hasSameValue(expected))
+    }
+
+    @Test
     fun handlesUnlimitedRead() = runTest {
         val input: String = TestHelper.readResourceAsString("htmltests/large.html.gz")
-        val byteBuffer: ByteArray = input.byteInputStream().readAllBytes()
-        val read = byteBuffer.decodeToString()
+        val stream = VaryingReadInputStream(input.byteInputStream())
+        val byteBuffer = DataUtil.readToByteBuffer(stream, 0)
+        val read = byteBuffer.array().decodeToString(0, byteBuffer.limit())
         assertEquals(input, read)
+    }
+
+    // an input stream to give a range of output sizes, that changes on each read
+    class VaryingReadInputStream(inStream: InputStream) : InputStream() {
+        private val inputStream: InputStream = inStream
+        private var stride = 0
+
+        override fun read(): Int {
+            return inputStream.read()
+        }
+
+        override fun read(b: ByteArray): Int {
+            return inputStream.read(b, 0, minOf(b.size, ++stride))
+        }
+
+        override fun read(b: ByteArray, off: Int, len: Int): Int {
+            return inputStream.read(b, off, minOf(len, ++stride))
+        }
     }
 }
