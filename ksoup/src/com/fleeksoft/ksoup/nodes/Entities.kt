@@ -12,7 +12,7 @@ import com.fleeksoft.ksoup.parser.CharacterReader
 import com.fleeksoft.ksoup.parser.Parser
 import com.fleeksoft.ksoup.ported.*
 import com.fleeksoft.ksoup.ported.Character
-import com.fleeksoft.ksoup.exception.IOException
+import com.fleeksoft.io.exception.IOException
 import com.fleeksoft.ksoup.exception.SerializationException
 import com.fleeksoft.charset.Charset
 import com.fleeksoft.charset.CharsetEncoder

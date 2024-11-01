@@ -5,7 +5,7 @@ import com.fleeksoft.ksoup.internal.StringUtil
 import com.fleeksoft.ksoup.nodes.Document.OutputSettings.Syntax
 import com.fleeksoft.ksoup.ported.KCloneable
 import com.fleeksoft.ksoup.ported.binarySearchBy
-import com.fleeksoft.ksoup.exception.IOException
+import com.fleeksoft.io.exception.IOException
 import com.fleeksoft.ksoup.exception.SerializationException
 
 /**

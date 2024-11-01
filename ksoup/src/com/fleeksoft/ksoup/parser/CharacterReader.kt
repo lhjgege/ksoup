@@ -2,7 +2,7 @@ package com.fleeksoft.ksoup.parser
 
 import com.fleeksoft.ksoup.internal.SoftPool
 import com.fleeksoft.ksoup.ported.buildString
-import com.fleeksoft.ksoup.exception.IOException
+import com.fleeksoft.io.exception.IOException
 import com.fleeksoft.ksoup.exception.UncheckedIOException
 import com.fleeksoft.io.Reader
 import com.fleeksoft.io.StringReader

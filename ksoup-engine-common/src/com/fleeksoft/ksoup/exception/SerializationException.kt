@@ -2,7 +2,7 @@ package com.fleeksoft.ksoup.exception
 
 /**
  * A SerializationException is raised whenever serialization of a DOM element fails. This exception usually wraps an
- * [IOException] that may be thrown due to an inaccessible output stream.
+ * [com.fleeksoft.io.exception.IOException] that may be thrown due to an inaccessible output stream.
  */
 public class SerializationException : RuntimeException {
     /**

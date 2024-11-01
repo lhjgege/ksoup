@@ -67,7 +67,7 @@ public suspend fun Ksoup.parseFile(
  * @param baseUri The URL where the HTML was retrieved from, to resolve relative links against.
  * @param parser alternate [parser][Parser.xmlParser] to use.
  * @return sane HTML
- * @throws IOException if the file could not be found, or read, or if the charsetName is invalid.
+ * @throws com.fleeksoft.io.exception.IOException if the file could not be found, or read, or if the charsetName is invalid.
  */
 
 suspend fun Ksoup.parsePath(

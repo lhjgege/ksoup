@@ -36,8 +36,6 @@ import com.fleeksoft.ksoup.select.QueryParser
  * A StreamParser can be reused via a new [.parse], but is not thread-safe for concurrent inputs.
  * New parsers should be used in each thread.
  *
- * If created via [Connection.Response.streamParser], or another Reader that is I/O backed, the iterator and
- * stream consumers will throw an [java.io.UncheckedIOException] if the underlying Reader errors during read.
  *
  * The StreamParser interface is currently in **beta** and may change in subsequent releases. Feedback on the
  * feature and how you're using it is very welcome
@@ -180,7 +178,7 @@ class StreamParser(private val parser: Parser) {
     /**
      * Runs the parser until the input is fully read, and returns the completed Document.
      * @return the completed Document
-     * @throws IOException if an I/O error occurs
+     * @throws com.fleeksoft.io.exception.IOException if an I/O error occurs
      */
     fun complete(): Document {
         val doc: Document = document()
@@ -192,7 +190,7 @@ class StreamParser(private val parser: Parser) {
      * When initialized as a fragment parse, runs the parser until the input is fully read, and returns the completed
      * fragment child nodes.
      * @return the completed child nodes
-     * @throws IOException if an I/O error occurs
+     * @throws com.fleeksoft.io.exception.IOException if an I/O error occurs
      * @see .parseFragment
      */
     fun completeFragment(): List<Node> {
@@ -205,7 +203,7 @@ class StreamParser(private val parser: Parser) {
      * input will be parsed until the first match is found, or the input is completely read.
      * @param query the [Selector] query.
      * @return the first matching [Element], or `null` if there's no match
-     * @throws IOException if an I/O error occurs
+     * @throws com.fleeksoft.io.exception.IOException if an I/O error occurs
      */
     fun selectFirst(query: String): Element? {
         return selectFirst(QueryParser.parse(query))
@@ -217,7 +215,7 @@ class StreamParser(private val parser: Parser) {
      * @param query the [Selector] query.
      * @return the first matching element
      * @throws IllegalArgumentException if no match is found
-     * @throws IOException if an I/O error occurs
+     * @throws com.fleeksoft.io.exception.IOException if an I/O error occurs
      */
     fun expectFirst(query: String): Element {
         return Validate.ensureNotNull(
@@ -231,7 +229,7 @@ class StreamParser(private val parser: Parser) {
      * input will be parsed until the first match is found, or the input is completely read.
      * @param eval the [Selector] evaluator.
      * @return the first matching [Element], or `null` if there's no match
-     * @throws IOException if an I/O error occurs
+     * @throws com.fleeksoft.io.exception.IOException if an I/O error occurs
      */
     fun selectFirst(eval: Evaluator): Element? {
         val doc: Document = document()
@@ -248,7 +246,7 @@ class StreamParser(private val parser: Parser) {
      * the input is completely read.
      * @param query the [Selector] query.
      * @return the next matching [Element], or `null` if there's no match
-     * @throws IOException if an I/O error occurs
+     * @throws com.fleeksoft.io.exception.IOException if an I/O error occurs
      */
     fun selectNext(query: String): Element? {
         return selectNext(QueryParser.parse(query))
@@ -260,7 +258,7 @@ class StreamParser(private val parser: Parser) {
      * @param query the [Selector] query.
      * @return the first matching element
      * @throws IllegalArgumentException if no match is found
-     * @throws IOException if an I/O error occurs
+     * @throws com.fleeksoft.io.exception.IOException if an I/O error occurs
      */
     fun expectNext(query: String): Element {
         return Validate.ensureNotNull(
@@ -274,7 +272,7 @@ class StreamParser(private val parser: Parser) {
      * the input is completely read.
      * @param eval the [Selector] evaluator.
      * @return the next matching [Element], or `null` if there's no match
-     * @throws IOException if an I/O error occurs
+     * @throws com.fleeksoft.io.exception.IOException if an I/O error occurs
      */
     fun selectNext(eval: Evaluator): Element? {
         val doc: Document = document() // validates the parse was initialized, keeps stack trace out of stream
