@@ -78,12 +78,7 @@ class ParseTest {
     fun testXwiki() = runTest {
         // this tests that when in CharacterReader we hit a buffer while marked, we preserve the mark when buffered up and can rewind
         val resourceName = "htmltests/xwiki-1324.html.gz"
-        val doc: Document = if (!TestHelper.isGzipSupported()) {
-            val input = TestHelper.readResource(resourceName)
-            Ksoup.parse(input = input, baseUri = "https://localhost/")
-        } else {
-            Ksoup.parseFile(filePath = TestHelper.getResourceAbsolutePath(resourceName), baseUri = "https://localhost/")
-        }
+        val doc: Document = TestHelper.parseResource(resourceName, baseUri = "https://localhost/")
         assertEquals("XWiki Jetty HSQLDB 12.1-SNAPSHOT", doc.select("#xwikiplatformversion").text())
 
         // was getting busted at =userdirectory, because it hit the bufferup point but the mark was then lost. so
