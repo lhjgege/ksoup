@@ -39,11 +39,7 @@ public abstract class TreeBuilder {
 
     fun getStack() = _stack!!
 
-    public open fun initialiseParse(
-        input: Reader,
-        baseUri: String,
-        parser: Parser,
-    ) {
+    public open fun initialiseParse(input: Reader, baseUri: String, parser: Parser) {
         end = Token.EndTag(this)
         doc = Document(parser.defaultNamespace(), baseUri)
         doc.parser(parser)

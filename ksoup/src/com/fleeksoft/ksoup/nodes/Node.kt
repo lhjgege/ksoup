@@ -393,7 +393,6 @@ public abstract class Node protected constructor() : KCloneable<Node> {
         index: Int,
         html: String,
     ) {
-        Validate.notNull(_parentNode)
         val context: Element? = if (_parentNode is Element) _parentNode as Element? else null
         val nodes: List<Node> = NodeUtils.parser(this).parseFragmentInput(html, context, baseUri())
         _parentNode?.addChildren(index, *nodes.toTypedArray())
@@ -455,7 +454,6 @@ public abstract class Node protected constructor() : KCloneable<Node> {
      * @see .wrap
      */
     public fun unwrap(): Node? {
-        Validate.notNull(_parentNode)
         val firstChild = firstChild()
         _parentNode!!.addChildren(_siblingIndex, *childNodesAsArray())
         this.remove()
@@ -471,7 +469,6 @@ public abstract class Node protected constructor() : KCloneable<Node> {
      * @param `in` the node that will replace the existing node.
      */
     public fun replaceWith(inNode: Node) {
-        Validate.notNull(_parentNode)
         _parentNode!!.replaceChild(this, inNode)
     }
 
@@ -708,7 +705,7 @@ public abstract class Node protected constructor() : KCloneable<Node> {
     /**
      * Get the outer HTML of this node.
      * @param accum accumulator to place HTML into
-     * @throws IOException if appending to the given accumulator fails.
+     * @throws com.fleeksoft.io.exception.IOException if appending to the given accumulator fails.
      */
     internal abstract fun outerHtmlHead(
         accum: Appendable,

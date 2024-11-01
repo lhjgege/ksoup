@@ -7,55 +7,6 @@ import com.fleeksoft.ksoup.exception.ValidationException
  */
 internal object Validate {
     /**
-     * Validates that the object is not null
-     * @param obj object to test
-     * @throws com.fleeksoft.ksoup.exception.ValidationException if the object is null
-     */
-    fun notNull(obj: Any?) {
-        requireNotNull(obj) { "Object must not be null" }
-    }
-
-    /**
-     * Validates that the parameter is not null
-     *
-     * @param obj the parameter to test
-     * @param param the name of the parameter, for presentation in the validation exception.
-     * @throws com.fleeksoft.ksoup.exception.ValidationException if the object is null
-     */
-    fun notNullParam(
-        obj: Any?,
-        param: String?,
-    ) {
-        if (obj == null) {
-            throw ValidationException("The parameter '$param' must not be null.")
-        }
-    }
-
-    /**
-     * Validates that the object is not null
-     * @param obj object to test
-     * @param msg message to include in the Exception if validation fails
-     * @throws com.fleeksoft.ksoup.exception.ValidationException if the object is null
-     */
-    fun notNull(
-        obj: Any?,
-        msg: String?,
-    ) {
-        if (obj == null) throw ValidationException(msg)
-    }
-
-    /**
-     * Verifies the input object is not null, and returns that object. Effectively this casts a nullable object to a non-
-     * null object. (Works around lack of Objects.requestNonNull in Android version.)
-     * @param obj nullable object to case to not-null
-     * @return the object, or throws an exception if it is null
-     * @throws com.fleeksoft.ksoup.exception.ValidationException if the object is null
-     */
-    fun ensureNotNull(obj: Any?): Any {
-        return obj ?: throw ValidationException("Object must not be null")
-    }
-
-    /**
      * Verifies the input object is not null, and returns that object. Effectively this casts a nullable object to a non-
      * null object. (Works around lack of Objects.requestNonNull in Android version.)
      * @param obj nullable object to case to not-null

@@ -31,10 +31,7 @@ public abstract class StructuralEvaluator(public val evaluator: Evaluator) : Eva
     }
 
     internal class Root : Evaluator() {
-        override fun matches(
-            root: Element,
-            element: Element,
-        ): Boolean {
+        override fun matches(root: Element, element: Element): Boolean {
             return root === element
         }
 

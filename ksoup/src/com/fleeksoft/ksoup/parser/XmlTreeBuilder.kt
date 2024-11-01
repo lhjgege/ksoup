@@ -18,11 +18,7 @@ public open class XmlTreeBuilder : TreeBuilder() {
         return ParseSettings.preserveCase
     }
 
-    override fun initialiseParse(
-        input: Reader,
-        baseUri: String,
-        parser: Parser,
-    ) {
+    override fun initialiseParse(input: Reader, baseUri: String, parser: Parser) {
         super.initialiseParse(input, baseUri, parser)
         doc.outputSettings()
             .syntax(Document.OutputSettings.Syntax.xml)

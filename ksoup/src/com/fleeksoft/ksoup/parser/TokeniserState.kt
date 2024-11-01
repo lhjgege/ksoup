@@ -1768,10 +1768,7 @@ public enum class TokeniserState {
     },
     ;
 
-    public abstract fun read(
-        t: Tokeniser,
-        r: CharacterReader,
-    )
+    public abstract fun read(t: Tokeniser, r: CharacterReader)
 
     public companion object {
         public const val nullChar: Char = '\u0000'
