@@ -1,5 +1,6 @@
 package com.fleeksoft.ksoup
 
+import com.fleeksoft.charset.Charset
 import com.fleeksoft.io.InputStream
 import com.fleeksoft.ksoup.helper.DataUtil
 import com.fleeksoft.ksoup.io.FileSource
@@ -8,7 +9,6 @@ import com.fleeksoft.ksoup.model.MetaData
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.parser.Parser
-import com.fleeksoft.ksoup.parser.StreamParser
 import com.fleeksoft.ksoup.ported.io.asInputStream
 import com.fleeksoft.ksoup.ported.toSourceFile
 import com.fleeksoft.ksoup.safety.Cleaner
@@ -259,7 +259,7 @@ public object Ksoup {
         charset: Charset? = null,
         interceptor: ((head: Element, metaData: MetaData) -> Unit)? = null
     ): MetaData {
-        val head = parse(sourceReader = sourceReader, baseUri = baseUri, charsetName = charset?.name).let { doc -> doc.headOrNull() ?: doc }
+        val head = parse(sourceReader = sourceReader, baseUri = baseUri, charsetName = charset?.name()).let { doc -> doc.headOrNull() ?: doc }
         val title = head.selectFirst("title")?.text()
         return parseMetaDataInternal(baseUri = baseUri, title = title) { query ->
             head.selectFirst(query)
@@ -279,9 +279,10 @@ public object Ksoup {
     fun parseMetaData(
         input: InputStream,
         baseUri: String = "",
-        interceptor: ((headStream: StreamParser, metaData: MetaData) -> Unit)? = null
+        charset: Charset? = null,
+        interceptor: ((headEl: Element, metaData: MetaData) -> Unit)? = null
     ): MetaData {
-        val head = parse(input = input, baseUri = baseUri, charsetName = charset?.name).let { doc -> doc.headOrNull() ?: doc }
+        val head = parse(input = input, baseUri = baseUri, charsetName = charset?.name()).let { doc -> doc.headOrNull() ?: doc }
         val title = head.selectFirst("title")?.text()
         return parseMetaDataInternal(baseUri = baseUri, title = title) { query ->
             head.selectFirst(query)
