@@ -21,7 +21,6 @@ dependencyResolutionManagement {
     }
 }
 
-include("ksoup-common")
 include("ksoup")
 include("ksoup-io")
 include("ksoup-io-fake") //just for test module

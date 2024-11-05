@@ -11,7 +11,8 @@ repositories:
   - mavenLocal
 
 dependencies:
-  - ../ksoup-common: exported
+  - $libs.fleeksoft.io: exported
+  - $libs.fleeksoft.charset: exported
   - $libs.stately.concurrency
 
 test-dependencies:
