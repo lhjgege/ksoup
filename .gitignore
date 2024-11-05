@@ -11,3 +11,4 @@ xcuserdata
 /gpg/
 /kotlin-js-store/
 .kotlin
+.fleet
