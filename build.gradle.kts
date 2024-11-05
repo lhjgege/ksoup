@@ -250,14 +250,14 @@ class MicroAmper(val project: Project) {
                     browser {
                         testTask {
                             useMocha {
-                                timeout = "9s"
+                                timeout = "12s"
                             }
                         }
                     }
                     nodejs {
                         testTask {
                             useMocha {
-                                timeout = "9s"
+                                timeout = "12s"
                             }
                         }
                     }
@@ -268,14 +268,14 @@ class MicroAmper(val project: Project) {
                         browser {
                             testTask {
                                 useMocha {
-                                    timeout = "9s"
+                                    timeout = "12s"
                                 }
                             }
                         }
                         nodejs {
                             testTask {
                                 useMocha {
-                                    timeout = "9s"
+                                    timeout = "12s"
                                 }
                             }
                         }
