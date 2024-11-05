@@ -24,6 +24,7 @@ allprojects {
         mavenCentral()
         google()
         gradlePluginPortal()
+        mavenLocal()
     }
     version = REAL_VERSION
     group = GROUP
