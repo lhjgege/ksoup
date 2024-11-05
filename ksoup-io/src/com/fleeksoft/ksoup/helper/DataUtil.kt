@@ -4,7 +4,8 @@ import com.fleeksoft.charset.Charset
 import com.fleeksoft.io.*
 import com.fleeksoft.ksoup.exception.IllegalCharsetNameException
 import com.fleeksoft.ksoup.exception.UncheckedIOException
-import com.fleeksoft.ksoup.internal.ControllableInputStream
+import com.fleeksoft.ksoup.exception.ValidationException
+import com.fleeksoft.ksoup.io.internal.ControllableInputStream
 import com.fleeksoft.ksoup.internal.StringUtil
 import com.fleeksoft.ksoup.nodes.Comment
 import com.fleeksoft.ksoup.nodes.Document
@@ -12,8 +13,8 @@ import com.fleeksoft.ksoup.nodes.Node
 import com.fleeksoft.ksoup.nodes.XmlDeclaration
 import com.fleeksoft.ksoup.parser.Parser
 import com.fleeksoft.ksoup.parser.StreamParser
-import com.fleeksoft.ksoup.ported.io.Charsets
-import com.fleeksoft.ksoup.ported.isCharsetSupported
+import com.fleeksoft.ksoup.io.Charsets
+import com.fleeksoft.ksoup.io.isCharsetSupported
 import com.fleeksoft.ksoup.select.Elements
 import kotlin.random.Random
 
@@ -165,11 +166,10 @@ public object DataUtil {
             } else {
                 doc = null
             }
-        } else { // specified by content type header (or by user on file load)
-            Validate.notEmpty(
-                effectiveCharsetName,
-                "Must set charset arg to character set of file to parse. Set to null to attempt to detect from HTML"
-            )
+        } else {
+            // specified by content type header (or by user on file load)
+            if (effectiveCharsetName.isBlank())
+                throw ValidationException("Must set charset arg to character set of file to parse. Set to null to attempt to detect from HTML")
         }
 
         // finally: prepare the return struct

@@ -1,9 +1,10 @@
-package com.fleeksoft.ksoup.internal
+package com.fleeksoft.ksoup.io.internal
 
 import com.fleeksoft.io.Constants
 import com.fleeksoft.io.FilterInputStream
 import com.fleeksoft.io.InputStream
 import com.fleeksoft.io.exception.IOException
+import com.fleeksoft.ksoup.internal.SoftPool
 import kotlin.math.min
 
 class SimpleBufferedInput(private val inputStream: InputStream) : FilterInputStream(inputStream) {

@@ -3,10 +3,10 @@ package com.fleeksoft.ksoup
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.parser.Parser
 import java.io.File
-import java.io.IOException
 import java.io.InputStream
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
+import kotlin.io.path.inputStream
 
 
 /**
@@ -25,7 +25,7 @@ public fun Ksoup.parseInputStream(
     charsetName: String? = null,
     parser: Parser = Parser.htmlParser(),
 ): Document {
-    return parse(
+    return parseInput(
         input = input,
         charsetName = charsetName,
         baseUri = baseUri,
@@ -49,8 +49,8 @@ public suspend fun Ksoup.parseFile(
     charsetName: String? = null,
     parser: Parser = Parser.htmlParser(),
 ): Document {
-    return parseFile(
-        file = file.toFileSource(),
+    return parseInput(
+        input = file.inputStream(),
         charsetName = charsetName,
         baseUri = baseUri,
         parser = parser,
@@ -76,8 +76,8 @@ suspend fun Ksoup.parsePath(
     charsetName: String? = null,
     parser: Parser = Parser.htmlParser()
 ): Document {
-    return parseFile(
-        file = path.toFileSource(),
+    return parseInput(
+        input = path.inputStream(),
         baseUri = baseUri,
         charsetName = charsetName,
         parser = parser

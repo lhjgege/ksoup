@@ -1,7 +1,6 @@
-package com.fleeksoft.ksoup.ported.io
+package com.fleeksoft.ksoup.io
 
 import com.fleeksoft.io.InputStream
-import com.fleeksoft.ksoup.io.SourceReader
 
 @Deprecated(
     message = "SourceInputStream(SourceReader) is deprecated, use com.fleeksoft.io.InputStream instead.",

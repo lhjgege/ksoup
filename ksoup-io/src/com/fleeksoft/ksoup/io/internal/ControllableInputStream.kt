@@ -1,4 +1,4 @@
-package com.fleeksoft.ksoup.internal
+package com.fleeksoft.ksoup.io.internal
 
 import com.fleeksoft.io.*
 import kotlin.math.min
@@ -79,7 +79,7 @@ class ControllableInputStream private constructor(val buff: SimpleBufferedInput,
         fun readToByteBuffer(input: InputStream, max: Int): ByteBuffer {
             require(max >= 0) { "maxSize must be 0 (unlimited) or larger" }
             val capped = max > 0
-            val readBuf = SimpleBufferedInput.BufferPool.borrow()
+            val readBuf = SimpleBufferedInput.Companion.BufferPool.borrow()
             val outSize = (if (capped) min(max, Constants.DEFAULT_BYTE_BUFFER_SIZE) else Constants.DEFAULT_BYTE_BUFFER_SIZE).coerceAtLeast(0)
             var outBuf = ByteBufferFactory.allocate(outSize)
 
@@ -111,7 +111,7 @@ class ControllableInputStream private constructor(val buff: SimpleBufferedInput,
                 outBuf.flipExt()
                 return outBuf
             } finally {
-                SimpleBufferedInput.BufferPool.release(readBuf)
+                SimpleBufferedInput.Companion.BufferPool.release(readBuf)
             }
         }
     }
