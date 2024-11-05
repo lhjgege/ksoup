@@ -28,7 +28,7 @@ object TestHelper {
     fun getResourceAbsolutePath(resourceName: String, absForWindows: Boolean = true): String {
         if (Platform.isWindows() && BuildConfig.isKorlibs && absForWindows) {
             return "../../../../testResources/$resourceName"
-        } else if ((Platform.isJsOrWasm() && BuildConfig.isKorlibs) || (Platform.isWasmJs())) {
+        } else if ((Platform.isJsOrWasm() && BuildConfig.isKorlibs) || (Platform.isJsOrWasm())) {
             return "https://raw.githubusercontent.com/fleeksoft/ksoup/release/ksoup-test/testResources/$resourceName"
         }
         return "${BuildConfig.PROJECT_ROOT}/ksoup-test/testResources/$resourceName"

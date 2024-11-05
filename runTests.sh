@@ -19,8 +19,9 @@ run_tests() {
 
     if [ ${#tasks[@]} -eq 0 ]; then
       echo "No specific tasks provided, running all default tests..."
-     # tasks=("jvmTest" "testDebugUnitTest" "testReleaseUnitTest" "jsTest" "wasmJsTest" "iosX64Test" "iosSimulatorArm64Test" "macosX64Test" "macosArm64Test" "tvosX64Test" "tvosSimulatorArm64Test")
-    tasks=("jvmTest" "jsTest" "wasmJsTest")
+     # tasks=("jvmTest" "testDebugUnitTest" "testReleaseUnitTest" "jsTest" "wasmTest" "iosX64Test" "iosSimulatorArm64Test" "macosX64Test" "macosArm64Test" "tvosX64Test" "tvosSimulatorArm64Test")
+#    tasks=("jvmTest" "jsTest" "wasmTest" "macosX64Test" "macosArm64Test")
+    tasks=("jvmTest" "wasmTest" "macosX64Test" "macosArm64Test")
    fi
 
      echo "Running tests with libBuildType=$libBuildType and tasks=${tasks[*]}..."
