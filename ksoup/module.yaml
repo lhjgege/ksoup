@@ -11,7 +11,7 @@ repositories:
   - mavenLocal
 
 dependencies:
-  - ../ksoup-engine-common: exported
+  - ../ksoup-common: exported
   - $libs.stately.concurrency
 
 test-dependencies:

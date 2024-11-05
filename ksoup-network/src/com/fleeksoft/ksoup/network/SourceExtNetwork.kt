@@ -2,7 +2,7 @@
 
 package com.fleeksoft.ksoup.network
 
-import com.fleeksoft.io.asInputStream
+import com.fleeksoft.io.kotlinx.asInputStream
 import com.fleeksoft.ksoup.io.SourceReader
 import com.fleeksoft.ksoup.io.from
 import io.ktor.client.statement.*

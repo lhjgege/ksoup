@@ -5,6 +5,7 @@ import com.fleeksoft.io.byteInputStream
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.TextUtil
 import com.fleeksoft.ksoup.nodes.*
+import com.fleeksoft.ksoup.parseInput
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
 
@@ -63,7 +64,7 @@ class XmlTreeBuilderTest {
     @Test
     fun testSupplyParserToDataStream() = runTest {
         val xmlTest = """<doc><val>One<val>Two</val>Three</val></doc>"""
-        val doc = Ksoup.parse(
+        val doc = Ksoup.parseInput(
             input = xmlTest.byteInputStream(),
             baseUri = "http://foo.com",
             charsetName = null,
@@ -122,7 +123,7 @@ class XmlTreeBuilderTest {
             <?xml version="1.0" encoding="ISO-8859-1"?>
             <data>äöåéü</data>
         """.trimIndent()
-        val doc = Ksoup.parse(
+        val doc = Ksoup.parseInput(
             input = xml.byteInputStream(Charsets.forName("ISO-8859-1")),
             baseUri = "http://example.com/",
             charsetName = null,

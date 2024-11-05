@@ -1563,7 +1563,7 @@ class HtmlParserTest {
     fun fallbackToUtfIfCantEncode() {
         // that charset can't be encoded, so make sure we flip to utf
         val input = "<html><meta charset=\"ISO-SSS\"/>One</html>"
-        val doc = Ksoup.parse(input = input.byteInputStream(), baseUri = "", charsetName = null)
+        val doc = Ksoup.parseInput(input = input.byteInputStream(), baseUri = "", charsetName = null)
         assertEquals("UTF-8", doc.charset().name().uppercase())
         assertEquals("One", doc.text())
         val html = doc.outerHtml()

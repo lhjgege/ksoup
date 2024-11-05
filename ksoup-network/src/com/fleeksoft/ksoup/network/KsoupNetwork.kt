@@ -2,6 +2,7 @@ package com.fleeksoft.ksoup.network
 
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
+import com.fleeksoft.ksoup.parseInput
 import com.fleeksoft.ksoup.parser.Parser
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -25,7 +26,7 @@ public suspend fun Ksoup.parseGetRequest(
     val httpResponse = NetworkHelperKtor.instance.get(url, httpRequestBuilder = httpRequestBuilder)
 //        url can be changed after redirection
     val finalUrl = httpResponse.request.url.toString()
-    return parse(input = httpResponse.asInputStream(), parser = parser, baseUri = finalUrl)
+    return Ksoup.parseInput(input = httpResponse.asInputStream(), parser = parser, baseUri = finalUrl)
 }
 
 /**
@@ -53,7 +54,7 @@ public suspend fun Ksoup.parseSubmitRequest(
         )
 //            url can be changed after redirection
     val finalUrl = httpResponse.request.url.toString()
-    return parse(input = httpResponse.asInputStream(), parser = parser, baseUri = finalUrl)
+    return parseInput(input = httpResponse.asInputStream(), parser = parser, baseUri = finalUrl)
 }
 
 /**
@@ -78,5 +79,5 @@ public suspend fun Ksoup.parsePostRequest(
     )
 //            url can be changed after redirection
     val finalUrl = httpResponse.request.url.toString()
-    return parse(input = httpResponse.asInputStream(), parser = parser, baseUri = finalUrl)
+    return parseInput(input = httpResponse.asInputStream(), parser = parser, baseUri = finalUrl)
 }

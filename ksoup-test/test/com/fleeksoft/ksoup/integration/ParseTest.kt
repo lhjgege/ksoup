@@ -4,6 +4,7 @@ import com.fleeksoft.io.byteInputStream
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.TestHelper
 import com.fleeksoft.ksoup.nodes.Document
+import com.fleeksoft.ksoup.parseInput
 import com.fleeksoft.ksoup.parser.Parser
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
@@ -61,7 +62,7 @@ class ParseTest {
             </html>
             """.trimIndent().byteInputStream()
 
-        val doc: Document = Ksoup.parse(input = input, baseUri = "http://example.com/", charsetName = null)
+        val doc: Document = Ksoup.parseInput(input = input, baseUri = "http://example.com/", charsetName = null)
         assertEquals("UTF-8", doc.outputSettings().charset().name().uppercase())
     }
 
@@ -93,7 +94,7 @@ class ParseTest {
         // this tests that if there is a huge illegal character reference, we can get through a buffer and rewind, and still catch that it's an invalid refence,
         // and the parse tree is correct.
         val parser = Parser.htmlParser()
-        val doc = Ksoup.parse(
+        val doc = Ksoup.parseInput(
             input = TestHelper.resourceFilePathToStream("htmltests/xwiki-edit.html.gz"),
             baseUri = "https://localhost/",
             charsetName = "UTF-8",
@@ -133,12 +134,7 @@ class ParseTest {
     @Test
     fun testFileParseNoCharsetMethod() = runTest {
         val resourceName = "htmltests/xwiki-1324.html.gz"
-        val doc: Document = if (!TestHelper.isGzipSupported()) {
-            val source = TestHelper.readResource(resourceName)
-            Ksoup.parse(input = source, baseUri = resourceName)
-        } else {
-            Ksoup.parseFile(filePath = TestHelper.getResourceAbsolutePath(resourceName))
-        }
+        val doc = TestHelper.parseResource(resourceName, baseUri = resourceName)
         assertEquals("XWiki Jetty HSQLDB 12.1-SNAPSHOT", doc.select("#xwikiplatformversion").text())
     }
 }

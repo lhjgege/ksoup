@@ -1,12 +1,11 @@
 plugins {
-//    alias(libs.plugins.dokka)
     alias(libs.plugins.mavenPublish)
 }
 
 group = "com.fleeksoft.ksoup"
 version = libs.versions.libraryVersion.get()
 
-val artifactId = "ksoup-lite"
+val artifactId = "ksoup-common"
 mavenPublishing {
     coordinates("com.fleeksoft.ksoup", artifactId, libs.versions.libraryVersion.get())
     pom {

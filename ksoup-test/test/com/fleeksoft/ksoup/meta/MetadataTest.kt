@@ -3,6 +3,7 @@ package com.fleeksoft.ksoup.meta
 import com.fleeksoft.io.byteInputStream
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.model.MetaData
+import com.fleeksoft.ksoup.parseMetaData
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

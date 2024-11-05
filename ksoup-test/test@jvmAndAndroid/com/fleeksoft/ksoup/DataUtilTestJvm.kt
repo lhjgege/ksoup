@@ -1,7 +1,7 @@
 package com.fleeksoft.ksoup
 
 import com.fleeksoft.ksoup.helper.DataUtil
-import com.fleeksoft.ksoup.internal.ControllableInputStream
+import com.fleeksoft.ksoup.io.internal.ControllableInputStream
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.parser.Parser
 import kotlinx.coroutines.test.runTest
@@ -23,37 +23,25 @@ class DataUtilTestJvm {
 
     @Test
     fun loadsGzipPath() = runTest {
-        if (!TestHelper.isGzipSupported()) {
-//            gzip not supported for this
-            return@runTest
-        }
-        val `in`: Path = ParserHelper.getPath("/htmltests/gzip.html.gz")
-        val doc: Document = Ksoup.parsePath(`in`)
+        val resourceName = "/htmltests/gzip.html.gz"
+        val doc: Document = TestHelper.parseResource(resourceName)
         assertEquals("Gzip test", doc.title())
         assertEquals("This is a gzipped HTML file.", doc.selectFirst("p")!!.text())
     }
 
     @Test
     fun loadsZGzipPath() = runTest {
-        if (!TestHelper.isGzipSupported()) {
-//            gzip not supported for this
-            return@runTest
-        }
         // compressed on win, with z suffix
-        val `in`: Path = ParserHelper.getPath("htmltests/gzip.html.z")
-        val doc: Document = Ksoup.parsePath(`in`)
+        val resouceName = "htmltests/gzip.html.z"
+        val doc: Document = TestHelper.parseResource(resouceName)
         assertEquals("Gzip test", doc.title())
         assertEquals("This is a gzipped HTML file.", doc.selectFirst("p")!!.text())
     }
 
     @Test
     fun handlesFakeGzipPath() = runTest {
-        if (!TestHelper.isGzipSupported()) {
-//            gzip not supported for this
-            return@runTest
-        }
-        val `in`: Path = ParserHelper.getPath("htmltests/fake-gzip.html.gz")
-        val doc: Document = Ksoup.parsePath(`in`)
+        val resourceName = "htmltests/fake-gzip.html.gz"
+        val doc: Document = TestHelper.parseResource(resourceName)
         assertEquals("This is not gzipped", doc.title())
         assertEquals("And should still be readable.", doc.selectFirst("p")!!.text())
     }
@@ -93,7 +81,7 @@ class DataUtilTestJvm {
         val file = File(TestHelper.getResourceAbsolutePath("htmltests/large.html.gz"))
         val input = getFileAsString(file)
         val expected = Ksoup.parse(html = input, baseUri = "https://example.com")
-        val doc: Document = Ksoup.parse(
+        val doc: Document = Ksoup.parseInput(
             input = GZIPInputStream(FileInputStream(file)),
             charsetName = null,
             baseUri = "https://example.com",
@@ -127,7 +115,7 @@ class DataUtilTestJvm {
             charsetName = null,
             baseUri = "https://example.com",
         )
-        val docThree: Document = Ksoup.parse(
+        val docThree: Document = Ksoup.parseInput(
             input = GZIPInputStream(FileInputStream(file)),
             charsetName = null,
             baseUri = "https://example.com",

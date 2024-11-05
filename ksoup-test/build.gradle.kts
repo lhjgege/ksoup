@@ -5,6 +5,31 @@ val libBuildType = project.findProperty("libBuildType")?.toString()
 kotlin {
     sourceSets {
         commonTest {
+            dependencies {
+                when (libBuildType) {
+                    "kotlinx" -> {
+                        implementation(project(":ksoup-kotlinx"))
+                    }
+
+                    "korlibs" -> {
+                        implementation(project(":ksoup-korlibs"))
+                    }
+
+                    "okio" -> {
+                        implementation(project(":ksoup-okio"))
+                    }
+
+                    else -> {
+                        implementation(project(":ksoup-io-fake"))
+                    }
+                }
+            }
+        }
+    }
+}
+kotlin {
+    sourceSets {
+        commonTest {
             this.kotlin.srcDir(layout.buildDirectory.file(rootPath))
         }
     }
@@ -27,7 +52,6 @@ val generateBuildConfigFile: Task by tasks.creating {
                 const val isKotlinx: Boolean = ${libBuildType == "kotlinx" || libBuildType == "common"}
                 const val isKorlibs: Boolean = ${libBuildType == "korlibs"}
                 const val isOkio: Boolean = ${libBuildType == "okio"}
-                const val isKtor2: Boolean = ${libBuildType == "ktor2"}
                 const val isLite: Boolean = ${libBuildType == "lite"}
             }
             """.trimIndent()

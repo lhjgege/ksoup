@@ -7,8 +7,9 @@ import com.fleeksoft.io.byteInputStream
 import com.fleeksoft.io.inputStream
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.TestHelper
-import com.fleeksoft.ksoup.internal.ControllableInputStream
+import com.fleeksoft.ksoup.io.internal.ControllableInputStream
 import com.fleeksoft.ksoup.nodes.Document
+import com.fleeksoft.ksoup.parseInput
 import com.fleeksoft.ksoup.parser.Parser
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
@@ -41,7 +42,7 @@ class DataUtilTest {
     }
 
     private fun stream(data: String, charset: String = "UTF-8"): ControllableInputStream {
-        return ControllableInputStream.wrap(data.byteInputStream(Charsets.forName(charset)), 0);
+        return ControllableInputStream.wrap(data.byteInputStream(Charsets.forName(charset)), 0)
     }
 
     @Test
@@ -251,7 +252,7 @@ class DataUtilTest {
     @Test
     fun supportsUTF8BOM() = runTest {
         val source = TestHelper.readResource("bomtests/bom_utf8.html")
-        val doc: Document = Ksoup.parse(input = source, baseUri = "http://example.com", charsetName = null)
+        val doc: Document = Ksoup.parseInput(input = source, baseUri = "http://example.com", charsetName = null)
         assertEquals("OK", doc.head().select("title").text())
     }
 
@@ -259,19 +260,14 @@ class DataUtilTest {
     fun noExtraNULLBytes() {
         val b = "<html><head><meta charset=\"UTF-8\"></head><body><div><u>ü</u>ü</div></body></html>"
             .toByteArray(Charsets.UTF8)
-        val doc = Ksoup.parse(b.inputStream(), baseUri = "", charsetName = null)
+        val doc = Ksoup.parseInput(b.inputStream(), baseUri = "", charsetName = null)
         assertFalse(doc.outerHtml().contains("\u0000"))
     }
 
     @Test
     fun supportsZippedUTF8BOM() = runTest {
         val resourceName = "bomtests/bom_utf8.html.gz"
-        val doc: Document = if (!TestHelper.isGzipSupported()) {
-            val source = TestHelper.readResource(resourceName)
-            Ksoup.parse(input = source, baseUri = "http://example.com")
-        } else {
-            Ksoup.parseFile(filePath = TestHelper.getResourceAbsolutePath(resourceName), baseUri = "http://example.com")
-        }
+        val doc = TestHelper.parseResource(resourceName, baseUri = "http://example.com")
 
         assertEquals("OK", doc.head().select("title").text())
         assertEquals(
@@ -304,44 +300,31 @@ class DataUtilTest {
                         "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" +
                         "<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">Hellö Wörld!</html>"
                 ).toByteArray(Charsets.forName(encoding)).inputStream()
-        val doc: Document = Ksoup.parse(soup, baseUri = "", charsetName = null)
+        val doc: Document = Ksoup.parseInput(soup, baseUri = "", charsetName = null)
         assertEquals("Hellö Wörld!", doc.body().text())
     }
 
     @Test
     fun loadsGzipFile() = runTest {
-        if (!TestHelper.isGzipSupported()) {
-//            gzip not supported for this
-            return@runTest
-        }
-        val input: String = TestHelper.getResourceAbsolutePath("htmltests/gzip.html.gz")
-        val doc: Document = Ksoup.parseFile(filePath = input, charsetName = null)
-        doc.toString()
+        val resourceName = "htmltests/gzip.html.gz"
+        val doc = TestHelper.parseResource(resourceName)
         assertEquals("Gzip test", doc.title())
         assertEquals("This is a gzipped HTML file.", doc.selectFirst("p")!!.text())
     }
 
     @Test
     fun loadsZGzipFile() = runTest {
-        if (!TestHelper.isGzipSupported()) {
-//            gzip not supported for this
-            return@runTest
-        }
         // compressed on win, with z suffix
-        val input: String = TestHelper.getResourceAbsolutePath("htmltests/gzip.html.z")
-        val doc: Document = Ksoup.parseFile(filePath = input, charsetName = null)
+        val resourceName = "htmltests/gzip.html.z"
+        val doc = TestHelper.parseResource(resourceName)
         assertEquals("Gzip test", doc.title())
         assertEquals("This is a gzipped HTML file.", doc.selectFirst("p")!!.text())
     }
 
     @Test
     fun handlesFakeGzipFile() = runTest {
-        if (!TestHelper.isGzipSupported()) {
-//            gzip not supported for this
-            return@runTest
-        }
-        val input: String = TestHelper.getResourceAbsolutePath("htmltests/fake-gzip.html.gz")
-        val doc: Document = Ksoup.parseFile(filePath = input, charsetName = null)
+        val resourceName = "htmltests/fake-gzip.html.gz"
+        val doc = TestHelper.parseResource(resourceName)
         assertEquals("This is not gzipped", doc.title())
         assertEquals("And should still be readable.", doc.selectFirst("p")!!.text())
     }
@@ -352,7 +335,7 @@ class DataUtilTest {
 
         val expected = Ksoup.parse(input, "https://example.com")
         val doc: Document =
-            Ksoup.parse(input = input.byteInputStream(), baseUri = "https://example.com", charsetName = null)
+            Ksoup.parseInput(input = input.byteInputStream(), baseUri = "https://example.com", charsetName = null)
 
         assertTrue(doc.hasSameValue(expected))
     }
@@ -364,7 +347,7 @@ class DataUtilTest {
         val stream = VaryingReadInputStream(input.byteInputStream())
 
         val expected = TestHelper.parseResource(resourceName, baseUri = "https://example.com", charsetName = null)
-        val doc = Ksoup.parse(input = stream, baseUri = "https://example.com", charsetName = null)
+        val doc = Ksoup.parseInput(input = stream, baseUri = "https://example.com", charsetName = null)
 
         assertTrue(doc.hasSameValue(expected))
     }

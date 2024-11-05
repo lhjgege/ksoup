@@ -1,11 +1,13 @@
 package com.fleeksoft.ksoup.nodes
 
 import com.fleeksoft.charset.Charsets
+import com.fleeksoft.charset.decodeToString
 import com.fleeksoft.charset.toByteArray
 import com.fleeksoft.io.byteInputStream
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.TestHelper
 import com.fleeksoft.ksoup.TextUtil
+import com.fleeksoft.ksoup.parseInput
 import com.fleeksoft.ksoup.parser.ParseSettings
 import com.fleeksoft.ksoup.parser.Parser
 import kotlinx.coroutines.test.runTest
@@ -479,10 +481,12 @@ class DocumentTest {
                         "</body>" +
                         "</html>"
                 )
-        val inputStream = input.byteInputStream()
-        val doc: Document = Ksoup.parse(input = inputStream, baseUri = "http://example.com", charsetName = null)
+        val inputStream = input.byteInputStream(Charsets.US_ASCII)
+        val doc: Document = Ksoup.parseInput(input = inputStream, baseUri = "http://example.com", charsetName = null)
         doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml)
-        val output = doc.html().toByteArray(doc.outputSettings().charset()).decodeToString()
+        val charset = doc.outputSettings().charset()
+        assertEquals(Charsets.forName("Shift_JIS"), charset)
+        val output = doc.html().toByteArray(charset).decodeToString(charset)
         assertFalse(output.contains("?"), "Should not have contained a '?'.")
         assertTrue(
             output.contains("&#xa0;") || output.contains("&nbsp;"),

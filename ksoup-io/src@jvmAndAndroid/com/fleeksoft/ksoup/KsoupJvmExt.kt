@@ -5,6 +5,7 @@ import com.fleeksoft.ksoup.parser.Parser
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Path
+import java.util.zip.GZIPInputStream
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.inputStream
 

@@ -20,7 +20,7 @@ mavenPublish = "0.30.0"
 stately = "2.1.0"
 jsoup = "1.18.1"
 fleeksoft-charset = "0.0.1"
-fleeksoft-io = "0.0.1"
+fleeksoft-io = "0.0.2-alpha1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

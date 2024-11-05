@@ -2,6 +2,7 @@ package com.fleeksoft.ksoup.network
 
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
+import com.fleeksoft.ksoup.parseInput
 import com.fleeksoft.ksoup.parser.Parser
 import korlibs.io.async.CIO
 import korlibs.io.net.http.HttpBodyContent
@@ -33,7 +34,7 @@ public suspend fun Ksoup.parseGetRequest(
     )
 //        url can be changed after redirection
     val finalUrl = httpResponse.headers["location"] ?: url
-    return@withContext parse(sourceReader = httpResponse.asSourceReader(), parser = parser, baseUri = finalUrl)
+    return@withContext Ksoup.parseInput(input = httpResponse.asInputStream(), parser = parser, baseUri = finalUrl)
 }
 
 /**
@@ -62,7 +63,7 @@ public suspend fun Ksoup.parseSubmitRequest(
     )
 //            url can be changed after redirection
     val finalUrl = httpResponse.headers["location"] ?: url
-    return@withContext parse(sourceReader = httpResponse.asSourceReader(), parser = parser, baseUri = finalUrl)
+    return@withContext Ksoup.parseInput(input = httpResponse.asInputStream(), parser = parser, baseUri = finalUrl)
 }
 
 /**
@@ -91,5 +92,5 @@ public suspend fun Ksoup.parsePostRequest(
     )
 //            url can be changed after redirection
     val finalUrl = httpResponse.headers["location"] ?: url
-    return@withContext parse(sourceReader = httpResponse.asSourceReader(), parser = parser, baseUri = finalUrl)
+    return@withContext Ksoup.parseInput(input = httpResponse.asInputStream(), parser = parser, baseUri = finalUrl)
 }
