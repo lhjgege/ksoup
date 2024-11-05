@@ -1,11 +1,5 @@
 package com.fleeksoft.ksoup.ported
 
-import com.fleeksoft.charset.Charsets
-
-internal fun String.isCharsetSupported(): Boolean {
-    return Charsets.isSupported(this)
-}
-
 internal fun IntArray.codePointsToString(): String {
     return if (this.isNotEmpty()) {
         buildString {
