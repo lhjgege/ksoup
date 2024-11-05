@@ -8,6 +8,6 @@ aliases:
   - jvmAndAndroid: [ jvm, android ]
 
 dependencies:
-  - ../ksoup-engine-common
-  - $libs.fleeksoft.kotlinx.io: exported
+  - ../ksoup-io: exported
+  - $libs.fleeksoft.io.kotlinx: exported
   - $libs.kotlinx.io: exported

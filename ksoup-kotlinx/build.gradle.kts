@@ -5,7 +5,7 @@ plugins {
 group = "com.fleeksoft.ksoup"
 version = libs.versions.libraryVersion.get()
 
-val artifactId = "ksoup-engine-kotlinx"
+val artifactId = "ksoup-kotlinx"
 mavenPublishing {
     coordinates("com.fleeksoft.ksoup", artifactId, libs.versions.libraryVersion.get())
     pom {
