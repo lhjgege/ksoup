@@ -35,18 +35,19 @@ public object Entities {
     private const val emptyName = ""
     private const val codepointRadix = 36
     private val codeDelims = charArrayOf(',', ';')
-    private val multipoints: HashMap<String, String> = HashMap<String, String>() // name -> multiple character references
+    private val multipoints: HashMap<String, String> =
+        HashMap<String, String>() // name -> multiple character references
 
     // cache the last used fallback encoder to save recreating on every use
     private val LocalEncoder = ThreadLocal<CharsetEncoder?> { null }
 
     private fun encoderFor(charset: Charset): CharsetEncoder {
-        var encoder = LocalEncoder.get();
+        var encoder = LocalEncoder.get()
         if (encoder == null || encoder.charset() != charset) {
-            encoder = charset.newEncoder();
-            LocalEncoder.setValue(encoder);
+            encoder = charset.newEncoder()
+            LocalEncoder.setValue(encoder)
         }
-        return encoder;
+        return encoder
     }
 
     /**
@@ -146,7 +147,14 @@ public object Entities {
     }
 
     // this method does a lot, but other breakups cause rescanning and stringbuilder generations
-    private fun doEscape(data: String, accum: Appendable, mode: EscapeMode, syntax: Syntax, charset: Charset, options: Int) {
+    private fun doEscape(
+        data: String,
+        accum: Appendable,
+        mode: EscapeMode,
+        syntax: Syntax,
+        charset: Charset,
+        options: Int
+    ) {
         val coreCharset: CoreCharset = CoreCharset.byName(charset.name())
         val fallback: CharsetEncoder = encoderFor(charset)
         val length = data.length

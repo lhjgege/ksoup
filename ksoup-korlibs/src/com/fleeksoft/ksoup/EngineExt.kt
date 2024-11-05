@@ -8,7 +8,6 @@ import korlibs.io.compression.uncompress
 import korlibs.io.file.VfsFile
 import korlibs.io.file.fullName
 import korlibs.io.file.readAsSyncStream
-import korlibs.io.stream.readAll
 
 suspend fun VfsFile.inputStream(): InputStream {
     val name = this.fullName.lowercase()
