@@ -13,7 +13,7 @@ if [ "$1" == "--remote" ]; then
 fi
 
 # Default build types if none are passed
-default_build_types=("common" "lite" "korlibs" "kotlinx" "okio" "ktor2")
+default_build_types=("core" "io" "korlibs" "kotlinx" "okio" "ktor2")
 
 # If build types are passed, use them; otherwise, use the default list
 if [ "$#" -ge 1 ]; then
@@ -26,11 +26,11 @@ fi
 add_projects_based_on_key() {
   local key="$1"
   case "$key" in
-    "common")
-      projects=("ksoup-common")
-      ;;
-    "lite")
+    "core")
       projects=("ksoup")
+      ;;
+    "io")
+      projects=("ksoup-io")
       ;;
     "kotlinx")
       projects=("ksoup-kotlinx" "ksoup-network")
@@ -51,22 +51,13 @@ add_projects_based_on_key() {
   esac
 }
 
-# Function to safely remove a directory if it exists
-safe_remove_dir() {
-    local dir="$1"
-    if [ -d "$dir" ]; then
-        rm -rf "$dir"
-    fi
-}
-
 # Loop through all projects and publish them
 for buildType in "${build_types[@]}"; do
   add_projects_based_on_key "$buildType"
 
   # clean build
-  echo "clean build"
-  safe_remove_dir "kotlin-js-store"
-  ./gradlew clean --quiet --warning-mode=none
+#  echo "clean build"
+#  ./gradlew clean --quiet --warning-mode=none
 
   for projectName in "${projects[@]}"; do
     echo "*****buildType: $buildType, project: $projectName"

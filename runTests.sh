@@ -3,14 +3,6 @@
 # Stop the script if any command fails
 set -e
 
-# Function to safely remove a directory if it exists
-safe_remove_dir() {
-    local dir="$1"
-    if [ -d "$dir" ]; then
-        rm -rf "$dir"
-    fi
-}
-
 # Function to run tests for a specific configuration
 run_tests() {
     local libBuildType="$1"
@@ -19,17 +11,16 @@ run_tests() {
 
     if [ ${#tasks[@]} -eq 0 ]; then
       echo "No specific tasks provided, running all default tests..."
-     # tasks=("jvmTest" "testDebugUnitTest" "testReleaseUnitTest" "jsTest" "wasmTest" "iosX64Test" "iosSimulatorArm64Test" "macosX64Test" "macosArm64Test" "tvosX64Test" "tvosSimulatorArm64Test")
-#    tasks=("jvmTest" "jsTest" "wasmTest" "macosX64Test" "macosArm64Test")
-    tasks=("jvmTest" "wasmTest" "macosX64Test" "macosArm64Test")
+     # tasks=("jvmTest" "testDebugUnitTest" "testReleaseUnitTest" "jsTest" "wasmJsTest" "iosX64Test" "iosSimulatorArm64Test" "macosX64Test" "macosArm64Test" "tvosX64Test" "tvosSimulatorArm64Test")
+#    tasks=("jvmTest" "jsTest" "wasmJsTest" "macosX64Test" "macosArm64Test")
+    tasks=("jvmTest" "wasmJsTest" "macosX64Test" "macosArm64Test")
    fi
 
      echo "Running tests with libBuildType=$libBuildType and tasks=${tasks[*]}..."
 
     # Remove build directories if they exist
     echo "clean build"
-    safe_remove_dir "kotlin-js-store" #remove it every task to avoid lock issue
-    ./gradlew clean -PlibBuildType="$libBuildType" --quiet --warning-mode=none
+    ./gradlew :ksoup-test:clean -PlibBuildType="$libBuildType" --quiet --warning-mode=none
 
     for task in "${tasks[@]}"; do
       start_time=$(date +%s)
