@@ -8,8 +8,7 @@ jobs:
     strategy:
       matrix:
         buildType:
-          - "common"
-          - "lite"
+          - "core"
           - "kotlinx"
           - "korlibs"
           - "ktor2"

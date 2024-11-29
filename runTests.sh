@@ -33,7 +33,7 @@ run_tests() {
 }
 
 # Supported parameters
-SUPPORTED_PARAMS=("lite" "korlibs" "okio" "kotlinx")
+SUPPORTED_PARAMS=("core" "korlibs" "okio" "kotlinx")
 
 # Function to check if the provided parameter is supported
 is_supported_param() {
