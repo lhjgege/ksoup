@@ -12,6 +12,7 @@ repositories:
 
 dependencies:
   - ../ksoup: exported
+  - $libs.fleeksoft.io: exported
 
 test-dependencies:
   - $kotlin-test
