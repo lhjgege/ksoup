@@ -1,6 +1,7 @@
 package com.fleeksoft.ksoup.helper
 
 import com.fleeksoft.charset.Charset
+import com.fleeksoft.charset.Charsets
 import com.fleeksoft.io.*
 import com.fleeksoft.ksoup.exception.IllegalCharsetNameException
 import com.fleeksoft.ksoup.exception.UncheckedIOException
@@ -13,7 +14,6 @@ import com.fleeksoft.ksoup.nodes.Node
 import com.fleeksoft.ksoup.nodes.XmlDeclaration
 import com.fleeksoft.ksoup.parser.Parser
 import com.fleeksoft.ksoup.parser.StreamParser
-import com.fleeksoft.ksoup.io.Charsets
 import com.fleeksoft.ksoup.io.isCharsetSupported
 import com.fleeksoft.ksoup.select.Elements
 import kotlin.random.Random
@@ -154,12 +154,7 @@ public object DataUtil {
                 // need to re-decode. (case insensitive check here to match how validate works)
                 foundCharset = foundCharset.trim { it <= ' ' }.replace("[\"']".toRegex(), "")
                 effectiveCharsetName = foundCharset
-//                if can't change charset don't try other
-                if (Charsets.isOnlyUtf8 && input.available() <= 0 && !fromStreamer) {
-                    input.close()
-                } else {
-                    doc = null
-                }
+                doc = null
             } else if (input.baseReadFully() && !fromStreamer) { // if we have read fully, and the charset was correct, keep that current parse
                 // but don't close input in streamer
                 input.close()
