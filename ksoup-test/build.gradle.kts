@@ -52,7 +52,7 @@ val generateBuildConfigFile: Task by tasks.creating {
                 const val isKotlinx: Boolean = ${libBuildType == "kotlinx" || libBuildType == "common"}
                 const val isKorlibs: Boolean = ${libBuildType == "korlibs"}
                 const val isOkio: Boolean = ${libBuildType == "okio"}
-                const val isLite: Boolean = ${libBuildType == "lite"}
+                const val isCore: Boolean = ${libBuildType == "core"}
             }
             """.trimIndent()
         file.get().asFile.writeText(content)

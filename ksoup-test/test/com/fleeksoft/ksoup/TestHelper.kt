@@ -98,7 +98,5 @@ object TestHelper {
     //    fun isGB2312Supported(): Boolean = !(Platform.isApple() || Platform.isWindows() || ((BuildConfig.isKotlinx || BuildConfig.isOkio || BuildConfig.isKtor2) && Platform.isJsOrWasm()) || (BuildConfig.isKorlibs && Platform.isLinux()))
     fun isGB2312Supported(): Boolean = true
 
-    fun canReadResourceFile(): Boolean = (!Platform.isWasmJs() || BuildConfig.isKorlibs) && !BuildConfig.isLite
-
-    fun isFileSourceSupported(): Boolean = !BuildConfig.isLite
+    fun canReadResourceFile(): Boolean = (!Platform.isWasmJs() || BuildConfig.isKorlibs) && !BuildConfig.isCore
 }
