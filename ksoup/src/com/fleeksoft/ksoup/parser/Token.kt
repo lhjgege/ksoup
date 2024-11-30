@@ -96,7 +96,7 @@ public abstract class Token private constructor(public var type: TokenType) {
         private var hasAttrValue = false
         private var hasEmptyAttrValue = false // distinguish boolean attribute from empty string value
 
-        private val trackSource: Boolean = treeBuilder.trackSourceRange
+        internal val trackSource: Boolean = treeBuilder.trackSourceRange
         private var attrNameStart: Int = 0
         private var attrNameEnd: Int = 0
         private var attrValStart: Int = 0
@@ -162,18 +162,10 @@ public abstract class Token private constructor(public var type: TokenType) {
                 val preserve = start.treeBuilder.settings!!.preserveAttributeCase()
 
                 assert(attributes != null)
-                var attrRanges: MutableMap<String, Range.AttributeRange?>? =
-                    attributes!!.userData(SharedConstants.AttrRangeKey) as MutableMap<String, Range.AttributeRange?>?
-                if (attrRanges == null) {
-                    attrRanges = mutableMapOf()
-                    attributes!!.userData(SharedConstants.AttrRangeKey, attrRanges)
-                }
 
-                val normalizedName: String = if (!preserve) Normalizer.lowerCase(name) else name
-                if (attrRanges.containsKey(
-                        normalizedName,
-                    )
-                ) {
+                var name = name
+                if (!preserve) name = Normalizer.lowerCase(name)
+                if (attributes!!.sourceRange(name).nameRange().isTracked()) {
                     return // dedupe ranges as we go; actual attributes get deduped later for error count
                 }
 
@@ -183,18 +175,17 @@ public abstract class Token private constructor(public var type: TokenType) {
                     attrValStart = attrValEnd
                 }
 
-                val range: Range.AttributeRange =
-                    Range.AttributeRange(
-                        Range(
-                            Range.Position(attrNameStart, r.lineNumber(attrNameStart), r.columnNumber(attrNameStart)),
-                            Range.Position(attrNameEnd, r.lineNumber(attrNameEnd), r.columnNumber(attrNameEnd)),
-                        ),
-                        Range(
-                            Range.Position(attrValStart, r.lineNumber(attrValStart), r.columnNumber(attrValStart)),
-                            Range.Position(attrValEnd, r.lineNumber(attrValEnd), r.columnNumber(attrValEnd)),
-                        ),
-                    )
-                attrRanges[normalizedName] = range
+                val range: Range.AttributeRange = Range.AttributeRange(
+                    Range(
+                        Range.Position(attrNameStart, r.lineNumber(attrNameStart), r.columnNumber(attrNameStart)),
+                        Range.Position(attrNameEnd, r.lineNumber(attrNameEnd), r.columnNumber(attrNameEnd)),
+                    ),
+                    Range(
+                        Range.Position(attrValStart, r.lineNumber(attrValStart), r.columnNumber(attrValStart)),
+                        Range.Position(attrValEnd, r.lineNumber(attrValEnd), r.columnNumber(attrValEnd)),
+                    ),
+                )
+                attributes!!.sourceRange(name, range)
             }
         }
 

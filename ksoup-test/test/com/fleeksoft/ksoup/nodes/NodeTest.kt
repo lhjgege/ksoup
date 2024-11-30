@@ -2,6 +2,7 @@ package com.fleeksoft.ksoup.nodes
 
 import com.fleeksoft.ksoup.BuildConfig
 import com.fleeksoft.ksoup.Ksoup
+import com.fleeksoft.ksoup.TextUtil
 import com.fleeksoft.ksoup.parser.Parser
 import com.fleeksoft.ksoup.parser.Tag
 import com.fleeksoft.ksoup.select.NodeVisitor
@@ -32,7 +33,10 @@ class NodeTest {
         assertEquals("", withBase.absUrl("noval"))
         val dodgyBase = Element(tag, "wtf://no-such-protocol/", attribs)
         assertEquals("http://bar/qux", dodgyBase.absUrl("absHref")) // base fails, but href good, so get that
-        assertEquals("wtf://no-such-protocol/foo", dodgyBase.absUrl("relHref")) // invalid protocol but still can be resolved
+        assertEquals(
+            "wtf://no-such-protocol/foo",
+            dodgyBase.absUrl("relHref")
+        ) // invalid protocol but still can be resolved
     }
 
     @Test
@@ -170,6 +174,22 @@ class NodeTest {
         val insert = doc.createElement("em").text("foo")
         p!!.childNode(1).replaceWith(insert)
         assertEquals("One <em>foo</em> three", p.html())
+    }
+
+    @Test
+    fun testReplaceTwice() {
+        val doc =
+            Ksoup.parse("<p><span>Child One</span><span>Child Two</span><span>Child Three</span><span>Child Four</span></p>")
+        val children = doc.select("p").first()?.children()!!
+        // first swap 0 and 1
+        children[0] = children.set(1, children[0])
+        // then swap 1 and 2
+        children[2] = children.set(1, children[2])
+
+        assertEquals(
+            "Child TwoChild ThreeChild OneChild Four",
+            TextUtil.stripNewlines(children.html())
+        )
     }
 
     @Test

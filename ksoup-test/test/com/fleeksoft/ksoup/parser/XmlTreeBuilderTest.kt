@@ -1,10 +1,12 @@
 package com.fleeksoft.ksoup.parser
 
+import com.fleeksoft.charset.Charsets
+import com.fleeksoft.io.byteInputStream
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.TextUtil
 import com.fleeksoft.ksoup.nodes.*
-import com.fleeksoft.ksoup.ported.io.Charsets
-import com.fleeksoft.ksoup.ported.openSourceReader
+import com.fleeksoft.ksoup.nodes.Document.OutputSettings.Syntax
+import com.fleeksoft.ksoup.parseInput
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
 
@@ -63,13 +65,12 @@ class XmlTreeBuilderTest {
     @Test
     fun testSupplyParserToDataStream() = runTest {
         val xmlTest = """<doc><val>One<val>Two</val>Three</val></doc>"""
-        val doc =
-            Ksoup.parse(
-                sourceReader = xmlTest.openSourceReader(),
-                baseUri = "http://foo.com",
-                charsetName = null,
-                parser = Parser.xmlParser(),
-            )
+        val doc = Ksoup.parseInput(
+            input = xmlTest.byteInputStream(),
+            baseUri = "http://foo.com",
+            charsetName = null,
+            parser = Parser.xmlParser(),
+        )
         assertEquals(
             "<doc><val>One<val>Two</val>Three</val></doc>",
             TextUtil.stripNewlines(doc.html()),
@@ -119,17 +120,17 @@ class XmlTreeBuilderTest {
 
     @Test
     fun testDetectCharsetEncodingDeclaration() = runTest {
-        val xmlCharset = """
+        val xml = """
             <?xml version="1.0" encoding="ISO-8859-1"?>
             <data>äöåéü</data>
         """.trimIndent()
-        val doc = Ksoup.parse(
-            sourceReader = xmlCharset.openSourceReader(charset = Charsets.forName("ISO-8859-1")),
+        val doc = Ksoup.parseInput(
+            input = xml.byteInputStream(Charsets.forName("ISO-8859-1")),
             baseUri = "http://example.com/",
             charsetName = null,
-            parser = Parser.xmlParser(),
+            parser = Parser.xmlParser()
         )
-        assertEquals("ISO-8859-1", doc.charset().name.uppercase())
+        assertEquals("ISO-8859-1", doc.charset().name().uppercase())
         assertEquals(
             "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><data>äöåéü</data>",
             TextUtil.stripNewlines(doc.html()),
@@ -256,7 +257,10 @@ class XmlTreeBuilderTest {
     fun handlesLTinScript() {
         val html = "<script> var a=\"<?\"; var b=\"?>\"; </script>"
         val doc = Ksoup.parse(html = html, baseUri = "", parser = Parser.xmlParser())
-        assertEquals("<script> var a=\"<!--?\"; var b=\"?-->\"; </script>", doc.html()) // converted from pseudo xmldecl to comment
+        assertEquals(
+            "<script> var a=\"<!--?\"; var b=\"?-->\"; </script>",
+            doc.html()
+        ) // converted from pseudo xmldecl to comment
     }
 
     @Test
@@ -307,6 +311,16 @@ class XmlTreeBuilderTest {
         assertEquals(Document.OutputSettings.Syntax.xml, doc.outputSettings().syntax())
         val out = doc.html()
         assertEquals("<body style=\"color: red\" _=\"\" name_=\"\"><div _=\"\"></div></body>", out)
+    }
+
+    @Test
+    fun xmlValidAttributes() {
+        val xml = "<a bB1-_:.=foo _9!=bar xmlns:p1=qux>One</a>"
+        val doc = Ksoup.parse(xml, Parser.xmlParser())
+        assertEquals(Syntax.xml, doc.outputSettings().syntax())
+
+        val out = doc.html()
+        assertEquals("<a bB1-_:.=\"foo\" _9_=\"bar\" xmlns:p1=\"qux\">One</a>", out) // first is same, second coerced
     }
 
     @Test

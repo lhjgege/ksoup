@@ -1,12 +1,12 @@
 package com.fleeksoft.ksoup
 
 import com.fleeksoft.ksoup.helper.DataUtil
+import com.fleeksoft.ksoup.io.internal.ControllableInputStream
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.parser.Parser
-import com.fleeksoft.ksoup.ported.io.Charsets
-import com.fleeksoft.ksoup.ported.toByteArray
 import kotlinx.coroutines.test.runTest
 import java.io.*
+import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 import java.util.zip.GZIPInputStream
 import kotlin.test.Test
@@ -18,42 +18,30 @@ import kotlin.test.assertTrue
 class DataUtilTestJvm {
 
     private fun inputStream(data: String): ByteArrayInputStream {
-        return ByteArrayInputStream(data.encodeToByteArray())
+        return data.byteInputStream()
     }
 
     @Test
     fun loadsGzipPath() = runTest {
-        if (!TestHelper.isGzipSupported()) {
-//            gzip not supported for this
-            return@runTest
-        }
-        val `in`: Path = ParserHelper.getPath("/htmltests/gzip.html.gz")
-        val doc: Document = Ksoup.parsePath(`in`)
+        val resourceName = "/htmltests/gzip.html.gz"
+        val doc: Document = TestHelper.parseResource(resourceName)
         assertEquals("Gzip test", doc.title())
         assertEquals("This is a gzipped HTML file.", doc.selectFirst("p")!!.text())
     }
 
     @Test
     fun loadsZGzipPath() = runTest {
-        if (!TestHelper.isGzipSupported()) {
-//            gzip not supported for this
-            return@runTest
-        }
         // compressed on win, with z suffix
-        val `in`: Path = ParserHelper.getPath("htmltests/gzip.html.z")
-        val doc: Document = Ksoup.parsePath(`in`)
+        val resouceName = "htmltests/gzip.html.z"
+        val doc: Document = TestHelper.parseResource(resouceName)
         assertEquals("Gzip test", doc.title())
         assertEquals("This is a gzipped HTML file.", doc.selectFirst("p")!!.text())
     }
 
     @Test
     fun handlesFakeGzipPath() = runTest {
-        if (!TestHelper.isGzipSupported()) {
-//            gzip not supported for this
-            return@runTest
-        }
-        val `in`: Path = ParserHelper.getPath("htmltests/fake-gzip.html.gz")
-        val doc: Document = Ksoup.parsePath(`in`)
+        val resourceName = "htmltests/fake-gzip.html.gz"
+        val doc: Document = TestHelper.parseResource(resourceName)
         assertEquals("This is not gzipped", doc.title())
         assertEquals("And should still be readable.", doc.selectFirst("p")!!.text())
     }
@@ -69,8 +57,8 @@ class DataUtilTestJvm {
             inputStream(firstPart),
             inputStream(secondPart),
         )
-        val doc: Document = DataUtil.parseInputSource(
-            sourceReader = sequenceStream.toSourceReader(),
+        val doc: Document = DataUtil.parseInputStream(
+            input = ControllableInputStream.wrap(sequenceStream, 0),
             charsetName = null,
             baseUri = "",
             parser = Parser.htmlParser(),
@@ -81,11 +69,11 @@ class DataUtilTestJvm {
     @Test
     fun testLowercaseUtf8CharsetWithInputStream() {
         val inputStream = FileInputStream(TestHelper.getResourceAbsolutePath("htmltests/lowercase-charset-test.html"))
-        val doc: Document = Ksoup.parseInputStream(inputStream = inputStream, baseUri = "", charsetName = null)
+        val doc: Document = Ksoup.parseInputStream(input = inputStream, baseUri = "", charsetName = null)
         val form = doc.select("#form").first()
         assertNotNull(form)
         assertEquals(2, form.children().size)
-        assertEquals("UTF-8", doc.outputSettings().charset().name.uppercase())
+        assertEquals("UTF-8", doc.outputSettings().charset().name().uppercase())
     }
 
     @Test
@@ -93,14 +81,14 @@ class DataUtilTestJvm {
         val file = File(TestHelper.getResourceAbsolutePath("htmltests/large.html.gz"))
         val input = getFileAsString(file)
         val expected = Ksoup.parse(html = input, baseUri = "https://example.com")
-        val doc: Document = Ksoup.parse(
-            sourceReader = GZIPInputStream(FileInputStream(file)).toSourceReader(),
+        val doc: Document = Ksoup.parseInput(
+            input = GZIPInputStream(FileInputStream(file)),
             charsetName = null,
             baseUri = "https://example.com",
         )
 
         val doc2: Document = Ksoup.parseInputStream(
-            inputStream = GZIPInputStream(FileInputStream(file)),
+            input = GZIPInputStream(FileInputStream(file)),
             charsetName = null,
             baseUri = "https://example.com"
         )
@@ -118,17 +106,17 @@ class DataUtilTestJvm {
         //        VaryingReadInputStream stream = new VaryingReadInputStream(ParseTest.inputStreamFrom(input));
         val expected: Document = Ksoup.parse(html = input, baseUri = "https://example.com")
         val doc: Document = Ksoup.parseInputStream(
-            inputStream = inputStreamFrom(input),
+            input = inputStreamFrom(input),
             charsetName = null,
             baseUri = "https://example.com",
         )
         val doc2: Document = Ksoup.parseInputStream(
-            inputStream = GZIPInputStream(FileInputStream(file)),
+            input = GZIPInputStream(FileInputStream(file)),
             charsetName = null,
             baseUri = "https://example.com",
         )
-        val docThree: Document = Ksoup.parse(
-            sourceReader = GZIPInputStream(FileInputStream(file)).toSourceReader(),
+        val docThree: Document = Ksoup.parseInput(
+            input = GZIPInputStream(FileInputStream(file)),
             charsetName = null,
             baseUri = "https://example.com",
         )
@@ -144,7 +132,7 @@ class DataUtilTestJvm {
 
 
         val doc: Document = Ksoup.parseInputStream(
-            inputStream = GZIPInputStream(FileInputStream(file)),
+            input = GZIPInputStream(FileInputStream(file)),
             charsetName = null,
             baseUri = "https://example.com",
         )
@@ -156,7 +144,7 @@ class DataUtilTestJvm {
             val bytes: ByteArray =
                 if (file.getName().endsWith(".gz")) {
                     val stream: InputStream = GZIPInputStream(FileInputStream(file))
-                    val byteBuffer: ByteArray = stream.toSourceReader().readAllBytes()
+                    val byteBuffer: ByteArray = stream.readAllBytes()
                     byteBuffer
                 } else {
                     file.readBytes()
@@ -165,7 +153,7 @@ class DataUtilTestJvm {
         }
 
         fun inputStreamFrom(s: String): InputStream {
-            return ByteArrayInputStream(s.toByteArray(Charsets.UTF8))
+            return ByteArrayInputStream(s.toByteArray(StandardCharsets.UTF_8))
         }
     }
 }

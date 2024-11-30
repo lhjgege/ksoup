@@ -147,10 +147,7 @@ public class Tokeniser(treeBuilder: TreeBuilder) {
         reader.advance()
     }
 
-    public fun consumeCharacterReference(
-        additionalAllowedCharacter: Char?,
-        inAttribute: Boolean,
-    ): IntArray? {
+    public fun consumeCharacterReference(additionalAllowedCharacter: Char?, inAttribute: Boolean): IntArray? {
         if (reader.isEmpty()) return null
         if (additionalAllowedCharacter != null && additionalAllowedCharacter == reader.current()) return null
         if (reader.matchesAnySorted(notCharRefCharsSorted)) return null
@@ -191,7 +188,7 @@ public class Tokeniser(treeBuilder: TreeBuilder) {
             }
             return codeRef
         } else {
-            val nameRef = reader.consumeLetterThenDigitSequence()
+            var nameRef = reader.consumeLetterThenDigitSequence()
             val looksLegit = reader.matches(';')
             val found =
                 (Entities.isBaseNamedEntity(nameRef) || (Entities.isNamedEntity(nameRef) && looksLegit))
@@ -199,7 +196,12 @@ public class Tokeniser(treeBuilder: TreeBuilder) {
             if (!found) {
                 reader.rewindToMark()
                 if (looksLegit) characterReferenceError("invalid named reference [$nameRef]")
-                return null
+                if (inAttribute) return null;
+                // check if there's a base prefix match; consume and use that if so
+                val prefix = Entities.findPrefix(nameRef);
+                if (prefix.isEmpty()) return null;
+                reader.matchConsume(prefix);
+                nameRef = prefix;
             }
 
             if (inAttribute && reader.matchesAny('=', '-', '_')) {
@@ -261,7 +263,8 @@ public class Tokeniser(treeBuilder: TreeBuilder) {
         Token.reset(dataBuffer)
     }
 
-    public fun isAppropriateEndTagToken(): Boolean = lastStartTag != null && tagPending.name().equals(lastStartTag, ignoreCase = true)
+    public fun isAppropriateEndTagToken(): Boolean =
+        lastStartTag != null && tagPending.name().equals(lastStartTag, ignoreCase = true)
 
     public fun appropriateEndTagName(): String? {
         return lastStartTag // could be null
@@ -338,7 +341,8 @@ public class Tokeniser(treeBuilder: TreeBuilder) {
 
     public companion object {
         public const val ReplacementChar: Char = '\uFFFD' // replaces null character
-        private val notCharRefCharsSorted: CharArray = charArrayOf('\t', '\n', '\r', '\u000c', ' ', '<', '&').sortedArray()
+        private val notCharRefCharsSorted: CharArray =
+            charArrayOf('\t', '\n', '\r', '\u000c', ' ', '<', '&').sortedArray()
 
         // Some illegal character escapes are parsed by browsers as windows-1252 instead. See issue #1034
         // https://html.spec.whatwg.org/multipage/parsing.html#numeric-character-reference-end-state

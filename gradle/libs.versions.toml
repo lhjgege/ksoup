@@ -1,14 +1,14 @@
 [versions]
-agp = "8.7.1"
-kotlin = "2.0.21"
+agp = "8.7.2"
+kotlin = "2.1.0"
 compileSdk = "35"
 minSdk = "21"
-libraryVersion = "0.2.0"
+libraryVersion = "0.2.1"
 ktor = "3.0.1"
-ktor2 = "2.3.12"
+ktor2 = "2.3.13"
 coroutines = "1.9.0"
 kotlinxDatetime = "0.6.1"
-kotlinx-io = "0.5.4"
+kotlinx-io = "0.6.0"
 okio = "3.9.1"
 dokka = "1.9.20"
 kotlinx-benchmark = "0.4.12"
@@ -18,7 +18,8 @@ korlibs = "6.0.1"
 mavenPublish = "0.30.0"
 
 stately = "2.1.0"
-jsoup = "1.18.1"
+jsoup = "1.18.2"
+fleeksoft-io = "0.0.2"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -50,6 +51,12 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okio-nodefilesystem = { module = "com.squareup.okio:okio-nodefilesystem", version.ref = "okio" }
 kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark" }
+fleeksoft-io-core = { module = "com.fleeksoft.io:io-core", version.ref = "fleeksoft-io" }
+fleeksoft-io = { module = "com.fleeksoft.io:io", version.ref = "fleeksoft-io" }
+fleeksoft-io-kotlinx = { module = "com.fleeksoft.io:kotlinx-io", version.ref = "fleeksoft-io" }
+fleeksoft-io-okio = { module = "com.fleeksoft.io:okio", version.ref = "fleeksoft-io" }
+fleeksoft-charset = { module = "com.fleeksoft.charset:charset", version.ref = "fleeksoft-io" }
+fleeksoft-charset-ext = { module = "com.fleeksoft.charset:charset-ext", version.ref = "fleeksoft-io" }
 
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

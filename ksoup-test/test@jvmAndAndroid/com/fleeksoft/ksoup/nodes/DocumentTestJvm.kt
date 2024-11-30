@@ -1,8 +1,7 @@
 package com.fleeksoft.ksoup.nodes
 
 import com.fleeksoft.ksoup.Ksoup
-import com.fleeksoft.ksoup.io.SourceReader
-import com.fleeksoft.ksoup.ported.openSourceReader
+import com.fleeksoft.ksoup.parseInput
 import java.io.StringWriter
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
@@ -46,13 +45,13 @@ class DocumentTestJvm {
         thread.start()
         thread.join()
         assertEquals(html, out[0])
-        assertEquals(StandardCharsets.US_ASCII.name(), doc.outputSettings().charset().name)
+        assertEquals(StandardCharsets.US_ASCII.name(), doc.outputSettings().charset().name())
         assertEquals(asci, p.outerHtml())
     }
 
     @Test
     fun testShiftJisRoundtrip() {
-        val input = (
+        val inputStr = (
                 "<html>" +
                         "<head>" +
                         "<meta http-equiv=\"content-type\" content=\"text/html; charset=Shift_JIS\" />" +
@@ -62,11 +61,11 @@ class DocumentTestJvm {
                         "</body>" +
                         "</html>"
                 )
-        val buffer: SourceReader = input.toByteArray(StandardCharsets.US_ASCII).openSourceReader()
-        val doc: Document = Ksoup.parse(sourceReader = buffer, baseUri = "http://example.com", charsetName = null)
+        val input = inputStr.byteInputStream(StandardCharsets.US_ASCII)
+        val doc: Document = Ksoup.parseInput(input = input, baseUri = "https://example.com", charsetName = null)
         doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml)
-        Charsets.UTF_16
-        val charset = Charset.forName(doc.outputSettings().charset().name)
+        val charset = Charset.forName(doc.outputSettings().charset().name())
+        assertEquals(Charset.forName("Shift_JIS"), charset)
         val output = doc.html().toByteArray(charset = charset).toString(charset = charset)
         assertFalse(output.contains("?"), "Should not have contained a '?'.")
         assertTrue(

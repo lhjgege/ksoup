@@ -1,10 +1,9 @@
 package com.fleeksoft.ksoup.parser
 
-import com.fleeksoft.ksoup.Ksoup.parse
+import com.fleeksoft.io.byteInputStream
+import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
-import com.fleeksoft.ksoup.ported.io.Charsets
-import com.fleeksoft.ksoup.ported.openSourceReader
-import com.fleeksoft.ksoup.ported.toByteArray
+import com.fleeksoft.ksoup.parseInput
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -28,12 +27,11 @@ class ParserTest {
 
     @Test
     fun testUtf8() {
-        val parsed: Document =
-            parse(
-                sourceReader = "<p>H\u00E9llo, w\u00F6rld!".toByteArray(Charsets.UTF8).openSourceReader(),
-                baseUri = "",
-                charsetName = null,
-            )
+        val parsed: Document = Ksoup.parseInput(
+            input = "<p>H\u00E9llo, w\u00F6rld!".byteInputStream(),
+            baseUri = "",
+            charsetName = null,
+        )
         val text = parsed.selectFirst("p")?.wholeText()
         assertEquals("H\u00E9llo, w\u00F6rld!", text)
     }

@@ -8,7 +8,7 @@ import com.fleeksoft.ksoup.parser.HtmlTreeBuilderState.Constants.InTableFoster
 import com.fleeksoft.ksoup.parser.HtmlTreeBuilderState.ForeignContent
 import com.fleeksoft.ksoup.parser.Parser.Companion.NamespaceHtml
 import com.fleeksoft.ksoup.ported.assert
-import com.fleeksoft.ksoup.ported.io.Reader
+import com.fleeksoft.io.Reader
 import kotlin.jvm.JvmOverloads
 
 /**
@@ -45,11 +45,7 @@ public open class HtmlTreeBuilder : TreeBuilder() {
         return HtmlTreeBuilder()
     }
 
-    override fun initialiseParse(
-        input: Reader,
-        baseUri: String,
-        parser: Parser,
-    ) {
+    override fun initialiseParse(input: Reader, baseUri: String, parser: Parser) {
         super.initialiseParse(input, baseUri, parser)
 
         // this is a bit mucky. todo - probably just create new parser objects to ensure all reset.
@@ -583,7 +579,7 @@ public open class HtmlTreeBuilder : TreeBuilder() {
 
                 "template" -> {
                     val tmplState: HtmlTreeBuilderState? = currentTemplateMode()
-                    Validate.notNull(tmplState, "Bug: no template insertion mode on stack!")
+                    requireNotNull(tmplState) { "Bug: no template insertion mode on stack!" }
                     transition(tmplState)
                     break@LOOP
                 }
@@ -860,9 +856,8 @@ public open class HtmlTreeBuilder : TreeBuilder() {
         while (true) {
             if (!skip) {
                 // step 7: on later than entry
-                entry = formattingElements?.get(++pos)
+                entry = formattingElements[++pos]
             }
-            Validate.notNull(entry) // should not occur, as we break at last element
 
             // 8. create new element from element, 9 insert into current node, onto stack
             skip = false // can only skip increment from 4.
@@ -939,7 +934,6 @@ public open class HtmlTreeBuilder : TreeBuilder() {
             fosterParent = getStack()[0]
         }
         if (isLastTableParent) {
-            Validate.notNull(lastTable) // last table cannot be null by this point.
             lastTable!!.before(inNode)
         } else {
             fosterParent!!.appendChild(inNode)

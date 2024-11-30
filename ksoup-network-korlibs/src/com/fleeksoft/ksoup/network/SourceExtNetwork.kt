@@ -1,8 +1,8 @@
 package com.fleeksoft.ksoup.network
 
-import com.fleeksoft.ksoup.io.SourceReader
-import com.fleeksoft.ksoup.io.from
+import com.fleeksoft.ksoup.io.asInputStream
 import korlibs.io.net.http.HttpClient
-import korlibs.io.stream.readAll
+import korlibs.io.stream.toAsyncStream
+import korlibs.io.stream.toSyncOrNull
 
-suspend fun HttpClient.Response.asSourceReader() = SourceReader.from(this.content.readAll())
+suspend fun HttpClient.Response.asInputStream() = this.content.toAsyncStream().toSyncOrNull()!!.asInputStream()

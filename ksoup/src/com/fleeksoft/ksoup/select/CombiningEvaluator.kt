@@ -53,7 +53,7 @@ public abstract class CombiningEvaluator internal constructor() : Evaluator() {
     }
 
     // ^ comparingInt, sortedEvaluators.sort not available in targeted version
-    public class And internal constructor(evaluators: Collection<Evaluator>) :
+    public class And constructor(evaluators: Collection<Evaluator>) :
         CombiningEvaluator(evaluators) {
             internal constructor(vararg evaluators: Evaluator) : this(evaluators.toList())
 
@@ -78,7 +78,7 @@ public abstract class CombiningEvaluator internal constructor() : Evaluator() {
          * Create a new Or evaluator. The initial evaluators are ANDed together and used as the first clause of the OR.
          * @param evaluators initial OR clause (these are wrapped into an AND evaluator).
          */
-        internal constructor(evaluators: Collection<Evaluator>) : super() {
+        constructor(evaluators: Collection<Evaluator>) : super() {
             if (num > 1) {
                 this.evaluators.add(And(evaluators))
             } else {

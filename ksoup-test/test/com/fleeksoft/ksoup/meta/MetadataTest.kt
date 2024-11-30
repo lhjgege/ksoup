@@ -1,8 +1,9 @@
 package com.fleeksoft.ksoup.meta
 
+import com.fleeksoft.io.byteInputStream
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.model.MetaData
-import com.fleeksoft.ksoup.ported.openSourceReader
+import com.fleeksoft.ksoup.parseMetaData
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -34,9 +35,8 @@ class MetadataTest {
     }
 
     @Test
-    fun testParseMetaDataFromSourceReader() {
-        val sourceReader = html.openSourceReader()
-        val metaData = Ksoup.parseMetaData(sourceReader, "https://example.com")
+    fun testParseMetaDataFromInputStream() {
+        val metaData = Ksoup.parseMetaData(html.byteInputStream(), "https://example.com")
 
         assertMetaData(metaData)
     }

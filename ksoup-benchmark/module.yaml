@@ -13,7 +13,6 @@ repositories:
 dependencies:
   - $libs.kotlinx.io
   - $libs.kotlinx.benchmark.runtime
-#  - com.fleeksoft.ksoup:ksoup-lite:0.1.8
   - ../ksoup
 
 dependencies@jvm:

@@ -2,8 +2,8 @@ package com.fleeksoft.ksoup.parser
 
 import com.fleeksoft.ksoup.nodes.*
 import com.fleeksoft.ksoup.parser.Parser.Companion.NamespaceXml
-import com.fleeksoft.ksoup.ported.io.Reader
-import com.fleeksoft.ksoup.ported.io.StringReader
+import com.fleeksoft.io.Reader
+import com.fleeksoft.io.StringReader
 
 /**
  * Use the `XmlTreeBuilder` when you want to parse XML without any of the HTML DOM rules being applied to the
@@ -18,11 +18,7 @@ public open class XmlTreeBuilder : TreeBuilder() {
         return ParseSettings.preserveCase
     }
 
-    override fun initialiseParse(
-        input: Reader,
-        baseUri: String,
-        parser: Parser,
-    ) {
+    override fun initialiseParse(input: Reader, baseUri: String, parser: Parser) {
         super.initialiseParse(input, baseUri, parser)
         doc.outputSettings()
             .syntax(Document.OutputSettings.Syntax.xml)

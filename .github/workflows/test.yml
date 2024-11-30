@@ -18,7 +18,7 @@ jobs:
           { target: windows, os: windows-latest, tasks: mingwX64Test, continueOnError: false },
           { target: linux, os: ubuntu-latest, tasks: linuxX64Test, continueOnError: false },
         ]
-        libBuildType: [ "lite", "korlibs", "kotlinx", "okio", "ktor2" ]
+        libBuildType: [ "core", "korlibs", "kotlinx", "okio" ]
     runs-on: ${{ matrix.config.os }}
     name: Build ${{ matrix.config.target }} with libBuildType=${{ matrix.libBuildType }}
     steps:

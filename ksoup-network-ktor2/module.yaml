@@ -13,7 +13,7 @@ repositories:
 
 dependencies:
   - $libs.kotlinx.coroutines.core
-  - ../ksoup: compile-only
+  - ../ksoup-kotlinx: exported
   - $libs.ktor2.client.core: exported
 
 dependencies@jvmAndAndroid:

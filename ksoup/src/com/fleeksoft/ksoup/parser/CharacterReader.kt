@@ -2,10 +2,10 @@ package com.fleeksoft.ksoup.parser
 
 import com.fleeksoft.ksoup.internal.SoftPool
 import com.fleeksoft.ksoup.ported.buildString
-import com.fleeksoft.ksoup.exception.IOException
+import com.fleeksoft.io.exception.IOException
 import com.fleeksoft.ksoup.exception.UncheckedIOException
-import com.fleeksoft.ksoup.ported.io.Reader
-import com.fleeksoft.ksoup.ported.io.StringReader
+import com.fleeksoft.io.Reader
+import com.fleeksoft.io.StringReader
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -73,7 +73,7 @@ public class CharacterReader {
         bufPos = 0
         while (bufLength < BufferSize) {
             try {
-                val read = reader!!.read(cbuf = charBuf!!, offset = bufLength, length = charBuf!!.size - bufLength)
+                val read = reader!!.read(charBuf!!, bufLength, charBuf!!.size - bufLength)
                 if (read == -1) {
                     readFully = true
                     break
@@ -447,7 +447,7 @@ public class CharacterReader {
 
     public fun consumeTagName(): String {
         // '\t', '\n', '\r', '\u000c', ' ', '/', '>'
-        // NOTE: out of spec, added '<' to fix common author bugs; does not stop and append on nullChar but eats
+        // NOTE: out of spec; does not stop and append on nullChar but eats
         bufferUp()
         var pos = bufPos
         val start = pos
@@ -455,7 +455,7 @@ public class CharacterReader {
         val value = charBuf ?: return ""
         OUTER@ while (pos < remaining) {
             when (value[pos]) {
-                '\t', '\n', '\r', '\u000c', ' ', '/', '>', '<' -> break@OUTER // for form feed '\u000c' to '\u000c'
+                '\t', '\n', '\r', '\u000c', ' ', '/', '>' -> break@OUTER // for form feed '\u000c' to '\u000c'
             }
             pos++
         }

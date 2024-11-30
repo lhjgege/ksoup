@@ -686,10 +686,7 @@ public class Elements(private val delegateList: MutableList<Element> = mutableLi
      * @param element element to be stored at the specified position
      * @return the old Element at this index
      */
-    override operator fun set(
-        index: Int,
-        element: Element,
-    ): Element {
+    override operator fun set(index: Int, element: Element): Element {
         val old: Element = delegateList.set(index = index, element = element)
         old.replaceWith(element)
         return old

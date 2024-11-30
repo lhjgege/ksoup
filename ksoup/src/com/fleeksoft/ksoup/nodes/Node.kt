@@ -5,7 +5,7 @@ import com.fleeksoft.ksoup.internal.StringUtil
 import com.fleeksoft.ksoup.ported.Consumer
 import com.fleeksoft.ksoup.ported.KCloneable
 import com.fleeksoft.ksoup.ported.LinkedList
-import com.fleeksoft.ksoup.exception.IOException
+import com.fleeksoft.io.exception.IOException
 import com.fleeksoft.ksoup.exception.SerializationException
 import com.fleeksoft.ksoup.select.NodeFilter
 import com.fleeksoft.ksoup.select.NodeTraversor
@@ -393,7 +393,6 @@ public abstract class Node protected constructor() : KCloneable<Node> {
         index: Int,
         html: String,
     ) {
-        Validate.notNull(_parentNode)
         val context: Element? = if (_parentNode is Element) _parentNode as Element? else null
         val nodes: List<Node> = NodeUtils.parser(this).parseFragmentInput(html, context, baseUri())
         _parentNode?.addChildren(index, *nodes.toTypedArray())
@@ -455,7 +454,6 @@ public abstract class Node protected constructor() : KCloneable<Node> {
      * @see .wrap
      */
     public fun unwrap(): Node? {
-        Validate.notNull(_parentNode)
         val firstChild = firstChild()
         _parentNode!!.addChildren(_siblingIndex, *childNodesAsArray())
         this.remove()
@@ -471,14 +469,11 @@ public abstract class Node protected constructor() : KCloneable<Node> {
      * @param `in` the node that will replace the existing node.
      */
     public fun replaceWith(inNode: Node) {
-        Validate.notNull(_parentNode)
+        if (_parentNode == null) _parentNode = inNode._parentNode; // allows old to have been temp removed before replacing
         _parentNode!!.replaceChild(this, inNode)
     }
 
-    private fun replaceChild(
-        out: Node,
-        inNode: Node,
-    ) {
+    private fun replaceChild(out: Node, inNode: Node) {
         Validate.isTrue(out._parentNode === this)
         if (out === inNode) return // no-op self replacement
         if (inNode._parentNode != null) inNode._parentNode!!.removeChild(inNode)
@@ -708,7 +703,7 @@ public abstract class Node protected constructor() : KCloneable<Node> {
     /**
      * Get the outer HTML of this node.
      * @param accum accumulator to place HTML into
-     * @throws IOException if appending to the given accumulator fails.
+     * @throws com.fleeksoft.io.exception.IOException if appending to the given accumulator fails.
      */
     internal abstract fun outerHtmlHead(
         accum: Appendable,
@@ -869,7 +864,8 @@ public abstract class Node protected constructor() : KCloneable<Node> {
         return clone
     }
 
-    private class OuterHtmlVisitor(private val accum: Appendable, private val out: Document.OutputSettings) : NodeVisitor {
+    private class OuterHtmlVisitor(private val accum: Appendable, private val out: Document.OutputSettings) :
+        NodeVisitor {
 
         override fun head(node: Node, depth: Int) {
             try {

@@ -5,6 +5,34 @@ val libBuildType = project.findProperty("libBuildType")?.toString()
 kotlin {
     sourceSets {
         commonTest {
+            dependencies {
+                when (libBuildType) {
+                    "kotlinx" -> {
+//                        implementation("com.fleeksoft.ksoup:ksoup-kotlinx:${libs.versions.libraryVersion.get()}")
+                        implementation(project(":ksoup-kotlinx"))
+                    }
+
+                    "korlibs" -> {
+//                        implementation("com.fleeksoft.ksoup:ksoup-korlibs:${libs.versions.libraryVersion.get()}")
+                        implementation(project(":ksoup-korlibs"))
+                    }
+
+                    "okio" -> {
+//                        implementation("com.fleeksoft.ksoup:ksoup-okio:${libs.versions.libraryVersion.get()}")
+                        implementation(project(":ksoup-okio"))
+                    }
+
+                    else -> {
+                        implementation(project(":ksoup-io-fake"))
+                    }
+                }
+            }
+        }
+    }
+}
+kotlin {
+    sourceSets {
+        commonTest {
             this.kotlin.srcDir(layout.buildDirectory.file(rootPath))
         }
     }
@@ -27,8 +55,7 @@ val generateBuildConfigFile: Task by tasks.creating {
                 const val isKotlinx: Boolean = ${libBuildType == "kotlinx" || libBuildType == "common"}
                 const val isKorlibs: Boolean = ${libBuildType == "korlibs"}
                 const val isOkio: Boolean = ${libBuildType == "okio"}
-                const val isKtor2: Boolean = ${libBuildType == "ktor2"}
-                const val isLite: Boolean = ${libBuildType == "lite"}
+                const val isCore: Boolean = ${libBuildType == "core"}
             }
             """.trimIndent()
         file.get().asFile.writeText(content)
