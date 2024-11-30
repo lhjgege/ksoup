@@ -84,7 +84,7 @@ object TestHelper {
     }
 
     fun isGzipSupported(): Boolean = BuildConfig.isKorlibs
-    fun isShiftJsSupported(): Boolean = true
+    fun isShiftJsSupported(): Boolean = Platform.isJvmOrAndroid()
 
     //    fun isUtf16Supported(): Boolean = !(((BuildConfig.isKotlinx || BuildConfig.isOkio || BuildConfig.isKtor2) && Platform.isJsOrWasm()))
     fun isUtf16Supported(): Boolean = true

@@ -17,7 +17,7 @@ test-dependencies:
   - $libs.kotlinx.coroutines.test
   - $libs.kotlinx.datetime
   - $libs.stately.concurrency
-  - $libs.fleeksoft.charset.ext
+#  - $libs.fleeksoft.charset.ext
 
 test-dependencies@jvmAndAndroid:
   - $libs.jsoup
