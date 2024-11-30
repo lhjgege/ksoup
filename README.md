@@ -32,20 +32,20 @@ Ksoup is adept at handling all varieties of HTML found in the wild.
 Include the dependency in `commonMain`. Latest version [![Maven Central](https://img.shields.io/maven-central/v/com.fleeksoft.ksoup/ksoup.svg)](https://central.sonatype.com/artifact/com.fleeksoft.ksoup/ksoup)
 
 Ksoup published in four variants. Pick the one that suits your needs and start building!
-1. **This variant is built without any external IO or Network dependencies. Use this if you want to parse HTML from a string.**
-   ```kotlin
-   implementation("com.fleeksoft.ksoup:ksoup-lite:<version>")
-    ```
-2. **This variant built with [kotlinx-io](https://github.com/Kotlin/kotlinx-io) and [Ktor 3](https://github.com/ktorio/ktor)**
+1. **Lightweight variant: Use this if you only need to parse HTML from a string.**
    ```kotlin
    implementation("com.fleeksoft.ksoup:ksoup:<version>")
+    ```
+2. **This variant use [kotlinx-io](https://github.com/Kotlin/kotlinx-io) for I/O and [Ktor 3](https://github.com/ktorio/ktor) for networking**
+   ```kotlin
+   implementation("com.fleeksoft.ksoup:ksoup-kotlinx:<version>")
    
     // Optional: Include only if you need to use network request functions such as
     // Ksoup.parseGetRequest, Ksoup.parseSubmitRequest, and Ksoup.parsePostRequest
    implementation("com.fleeksoft.ksoup:ksoup-network:<version>")
     ```
 
-3. **This variant is built with [korlibs-io](https://github.com/korlibs/korlibs-io)**
+3. **This variant use [korlibs-io](https://github.com/korlibs/korlibs-io) for I/O and networking**
    ```kotlin
    implementation("com.fleeksoft.ksoup:ksoup-korlibs:<version>")
 
@@ -54,7 +54,7 @@ Ksoup published in four variants. Pick the one that suits your needs and start b
    implementation("com.fleeksoft.ksoup:ksoup-network-korlibs:<version>")
     ```
 
-4. **This variant built with [kotlinx-io](https://github.com/Kotlin/kotlinx-io) and [Ktor 2](https://github.com/ktorio/ktor)**
+4. **This variant use [kotlinx-io](https://github.com/Kotlin/kotlinx-io) for I/O and [Ktor 2](https://github.com/ktorio/ktor) for networking**
    ```kotlin
    implementation("com.fleeksoft.ksoup:ksoup-ktor2:<version>")
 
@@ -62,7 +62,7 @@ Ksoup published in four variants. Pick the one that suits your needs and start b
     // Ksoup.parseGetRequest, Ksoup.parseSubmitRequest, and Ksoup.parsePostRequest
    implementation("com.fleeksoft.ksoup:ksoup-network-ktor2:<version>")
     ```
-5. **This variant built with [okio](https://github.com/square/okio) and [Ktor 2](https://github.com/ktorio/ktor)**
+5. **This variant use [okio](https://github.com/square/okio) for I/O and [Ktor 2](https://github.com/ktorio/ktor) for networking**
    ```kotlin
    implementation("com.fleeksoft.ksoup:ksoup-okio:<version>")
 
@@ -70,8 +70,6 @@ Ksoup published in four variants. Pick the one that suits your needs and start b
     // Ksoup.parseGetRequest, Ksoup.parseSubmitRequest, and Ksoup.parsePostRequest
    implementation("com.fleeksoft.ksoup:ksoup-network-ktor2:<version>")
     ```
-
-   **NOTE:** Variants built with kotlinx do not support gzip files.
 
 
 ### Parsing HTML from a String with Ksoup
@@ -139,10 +137,8 @@ In this example, `Ksoup.parseGetRequest` fetches and parses HTML content from Wi
 
 #### For further documentation, please check here: [Jsoup](https://jsoup.org/)
 
-### Ksoup vs. Jsoup Performance: Parsing & Selecting 448KB HTML File [test.tx](https://github.com/fleeksoft/ksoup/blob/develop/ksoup-test/testResources/test.txt)
+### Ksoup vs. Jsoup Benchmarks: Parsing & Selecting 448KB HTML File [test.tx](https://github.com/fleeksoft/ksoup/blob/develop/ksoup-test/testResources/test.txt)
 ![Ksoup vs Jsoup](performance1.png)
-
-![Ksoup vs Jsoup](performance.png)
 
 ## Open source
 Ksoup is an open source project, a Kotlin Multiplatform port of jsoup, distributed under the Apache License, Version 2.0. The source code of Ksoup is available on [GitHub](https://github.com/fleeksoft/ksoup).
@@ -154,19 +150,6 @@ For questions about usage and general inquiries, please refer to [GitHub Discuss
 If you wish to contribute, please read the [Contributing Guidelines](CONTRIBUTING.md).
 
 To report any issues, visit our [GitHub issues](https://github.com/fleeksoft/ksoup/issues), Please ensure to check for duplicates before submitting a new issue.
-
-## Library Status
-
-| Platform       | Status       | Notes                    |
-|----------------|--------------|--------------------------|
-| Android        | Stable       |                          |
-| JVM            | Stable       |                          |
-| iOS            | Stable       |                          |
-| JS             | Alpha        |                          |
-| WasmJs         | Alpha        | not supported with ktor2 |
-| Native MacOS   | Alpha        |                          |
-| Linux          | Experimental |                          |
-| Native Windows | Experimental |                          |
 
 
 
