@@ -122,6 +122,14 @@ class EntitiesTest {
     }
 
     @Test
+    fun prefixMatch() {
+        // example from https://html.spec.whatwg.org/multipage/parsing.html#character-reference-state
+        val text = "I'm &notit; I tell you. I'm &notin; I tell you."
+        assertEquals("I'm ¬it; I tell you. I'm ∉ I tell you.", Entities.unescape(text, false))
+        assertEquals("I'm &notit; I tell you. I'm ∉ I tell you.", Entities.unescape(text, true)) // not for attributes
+    }
+
+    @Test
     fun caseSensitive() {
         val unescaped = "Ü ü & &"
         assertEquals(

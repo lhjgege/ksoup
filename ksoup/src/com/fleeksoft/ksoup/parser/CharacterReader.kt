@@ -447,7 +447,7 @@ public class CharacterReader {
 
     public fun consumeTagName(): String {
         // '\t', '\n', '\r', '\u000c', ' ', '/', '>'
-        // NOTE: out of spec, added '<' to fix common author bugs; does not stop and append on nullChar but eats
+        // NOTE: out of spec; does not stop and append on nullChar but eats
         bufferUp()
         var pos = bufPos
         val start = pos
@@ -455,7 +455,7 @@ public class CharacterReader {
         val value = charBuf ?: return ""
         OUTER@ while (pos < remaining) {
             when (value[pos]) {
-                '\t', '\n', '\r', '\u000c', ' ', '/', '>', '<' -> break@OUTER // for form feed '\u000c' to '\u000c'
+                '\t', '\n', '\r', '\u000c', ' ', '/', '>' -> break@OUTER // for form feed '\u000c' to '\u000c'
             }
             pos++
         }

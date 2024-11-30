@@ -27,8 +27,10 @@ import com.fleeksoft.ksoup.exception.SerializationException
 public class Attributes : Iterable<Attribute>, KCloneable<Attributes> {
     // the number of instance fields is kept as low as possible giving an object size of 24 bytes
     private var size = 0 // number of slots used (not total capacity, which is keys.length)
-    internal var keys: Array<String?> = arrayOfNulls(InitialCapacity) // keys is not null, but contents may be. Same for vals
-    internal var vals = arrayOfNulls<Any>(InitialCapacity) // Genericish: all non-internal attribute values must be Strings and are cast on access.
+    internal var keys: Array<String?> =
+        arrayOfNulls(InitialCapacity) // keys is not null, but contents may be. Same for vals
+    internal var vals =
+        arrayOfNulls<Any>(InitialCapacity) // Genericish: all non-internal attribute values must be Strings and are cast on access.
     // todo - make keys iterable without creating Attribute objects
 
     // check there's room for more
@@ -358,6 +360,23 @@ public class Attributes : Iterable<Attribute>, KCloneable<Attributes> {
     /** Get the Ranges, if tracking is enabled; null otherwise.  */
     public fun getRanges(): MutableMap<String, Range.AttributeRange>? {
         return userData(SharedConstants.AttrRangeKey) as MutableMap<String, Range.AttributeRange>?
+    }
+
+    /**
+     * Set the source ranges (start to end position) from which this attribute's **name** and **value** were parsed.
+     * @param key the attribute name
+     * @param range the range for the attribute's name and value
+     * @return these attributes, for chaining
+     * @since 0.2.1
+     */
+    fun sourceRange(key: String, range: Range.AttributeRange): Attributes {
+        var ranges = getRanges()
+        if (ranges == null) {
+            ranges = mutableMapOf<String, Range.AttributeRange>()
+            userData(SharedConstants.AttrRangeKey, ranges)
+        }
+        ranges[key] = range
+        return this
     }
 
     override fun iterator(): MutableIterator<Attribute> {

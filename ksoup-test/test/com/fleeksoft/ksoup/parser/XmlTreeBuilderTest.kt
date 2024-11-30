@@ -5,6 +5,7 @@ import com.fleeksoft.io.byteInputStream
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.TextUtil
 import com.fleeksoft.ksoup.nodes.*
+import com.fleeksoft.ksoup.nodes.Document.OutputSettings.Syntax
 import com.fleeksoft.ksoup.parseInput
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
@@ -310,6 +311,16 @@ class XmlTreeBuilderTest {
         assertEquals(Document.OutputSettings.Syntax.xml, doc.outputSettings().syntax())
         val out = doc.html()
         assertEquals("<body style=\"color: red\" _=\"\" name_=\"\"><div _=\"\"></div></body>", out)
+    }
+
+    @Test
+    fun xmlValidAttributes() {
+        val xml = "<a bB1-_:.=foo _9!=bar xmlns:p1=qux>One</a>"
+        val doc = Ksoup.parse(xml, Parser.xmlParser())
+        assertEquals(Syntax.xml, doc.outputSettings().syntax())
+
+        val out = doc.html()
+        assertEquals("<a bB1-_:.=\"foo\" _9_=\"bar\" xmlns:p1=\"qux\">One</a>", out) // first is same, second coerced
     }
 
     @Test

@@ -248,7 +248,12 @@ public open class Attribute : Map.Entry<String, String?>, KCloneable<Attribute> 
             accum.append(key)
             if (!shouldCollapseAttribute(key, value, out)) {
                 accum.append("=\"")
-                Entities.escape(accum = accum, data = Attributes.checkNotNull(value), out = out, options = Entities.ForAttribute)
+                Entities.escape(
+                    accum = accum,
+                    data = Attributes.checkNotNull(value),
+                    out = out,
+                    options = Entities.ForAttribute
+                )
                 accum.append('"')
             }
         }
@@ -298,7 +303,7 @@ public open class Attribute : Map.Entry<String, String?>, KCloneable<Attribute> 
             if (!((c in 'a'..'z') || (c in 'A'..'Z') || (c == '_') || (c == ':'))) return false
             for (i in 1 until length) {
                 c = key[i]
-                if (!((c in 'a'..'z') || (c in 'A'..'Z') || (c == '_') || (c == ':'))) return false
+                if (!((c in 'a'..'z') || (c in 'A'..'Z') || (c in '0'..'9') || c == '-' || c == '_' || c == ':' || c == '.')) return false
             }
             return true
         }
@@ -309,7 +314,7 @@ public open class Attribute : Map.Entry<String, String?>, KCloneable<Attribute> 
             if (length == 0) return false
             for (i in 0 until length) {
                 val c = key[i]
-                if (c.code <= 0x1f || c.code in 0x7f..0x9f || c == ' ' || c == '"' || c == '\'' || c == '/' || c == '=') return false
+                if ((c.code <= 0x1f) || (c.code in 0x7f..0x9f) || c == ' ' || c == '"' || c == '\'' || c == '/' || c == '=') return false
             }
             return true
         }

@@ -186,17 +186,6 @@ class TokeniserStateTest {
     }
 
     @Test
-    fun handlesLessInTagThanAsNewTag() {
-        // out of spec, but clear author intent
-        val html = "<p\n<p<div id=one <span>Two"
-        val doc = Ksoup.parse(html)
-        assertEquals(
-            "<p></p><p></p><div id=\"one\"><span>Two</span></div>",
-            com.fleeksoft.ksoup.TextUtil.stripNewlines(doc.body().html()),
-        )
-    }
-
-    @Test
     fun testUnconsumeAtBufferBoundary() {
         val triggeringSnippet = "<a href=\"\"foo"
         val padding =
@@ -228,7 +217,7 @@ class TokeniserStateTest {
         val triggeringSnippet = "<html <"
         val errorList = ParseErrorList.tracking(1)
         Parser.parseFragment(triggeringSnippet, null, "", errorList)
-        assertEquals(6, errorList[0].pos)
+        assertEquals(7, errorList[0].pos)
     }
 
     @Test
@@ -237,14 +226,6 @@ class TokeniserStateTest {
         val errorList = ParseErrorList.tracking(1)
         Parser.parseFragment(triggeringSnippet, null, "", errorList)
         assertEquals(7, errorList[0].pos)
-    }
-
-    @Test
-    fun testOpeningAngleBracketInTagName() {
-        val triggeringSnippet = "<html<"
-        val errorList = ParseErrorList.tracking(1)
-        Parser.parseFragment(triggeringSnippet, null, "", errorList)
-        assertEquals(5, errorList[0].pos)
     }
 
     @Test

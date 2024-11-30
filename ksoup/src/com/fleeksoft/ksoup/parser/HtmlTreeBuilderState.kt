@@ -33,7 +33,9 @@ public enum class HtmlTreeBuilderState {
                 tb.document.appendChild(doctype)
                 tb.onNodeInserted(doctype)
                 // todo: quirk state check on more doctype ids, if deemed useful (most are ancient legacy and presumably irrelevant)
-                if (d.isForceQuirks || doctype.name() != "html" || doctype.publicId().equals("HTML", ignoreCase = true)) tb.document.quirksMode(
+                if (d.isForceQuirks || doctype.name() != "html" || doctype.publicId()
+                        .equals("HTML", ignoreCase = true)
+                ) tb.document.quirksMode(
                     Document.QuirksMode.quirks
                 )
                 tb.transition(BeforeHtml)
@@ -366,10 +368,7 @@ public enum class HtmlTreeBuilderState {
             return true
         }
 
-        private fun inBodyStartTag(
-            t: Token,
-            tb: HtmlTreeBuilder,
-        ): Boolean {
+        private fun inBodyStartTag(t: Token, tb: HtmlTreeBuilder): Boolean {
             val startTag: Token.StartTag = t.asStartTag()
             val name: String = startTag.retrieveNormalName()
             val stack: ArrayList<Element?>
@@ -429,16 +428,9 @@ public enum class HtmlTreeBuilderState {
                     if (tb.onStack("template")) return false // ignore
                     // otherwise, merge attributes onto real html (if present)
                     stack = tb.getStack()
-                    if (stack.size > 0) {
+                    if (stack.isNotEmpty()) {
                         val html: Element = tb.getStack()[0]!!
-                        if (startTag.hasAttributes()) {
-                            for (attribute in (startTag.attributes ?: emptyList())) {
-                                if (!html.hasAttr(attribute.key)) {
-                                    html.attributes()
-                                        .put(attribute)
-                                }
-                            }
-                        }
+                        mergeAttributes(startTag, html)
                     }
                 }
 
@@ -453,17 +445,8 @@ public enum class HtmlTreeBuilderState {
                     } else {
                         tb.framesetOk(false)
                         // will be on stack if this is a nested body. won't be if closed (which is a variance from spec, which leaves it on)
-                        var body: Element? = null
-                        if (startTag.hasAttributes() && tb.getFromStack("body")
-                                .also { body = it!! } != null
-                        ) { // we only ever put one body on stack
-                            for (attribute in startTag.attributes!!) {
-                                if (body?.hasAttr(attribute.key) != true) {
-                                    body?.attributes()
-                                        ?.put(attribute)
-                                }
-                            }
-                        }
+                        val body = tb.getFromStack("body")
+                        if (body != null) mergeAttributes(startTag, body)
                     }
                 }
 
@@ -1967,10 +1950,7 @@ public enum class HtmlTreeBuilderState {
                 Token.TokenType.EndTag -> {
                     val end: Token.EndTag = t.asEndTag()
                     if (end.normalName.equals("br") || end.normalName.equals("p")) {
-                        return processAsHtml(
-                            t,
-                            tb,
-                        )
+                        return processAsHtml(t, tb)
                     }
                     if (end.normalName.equals("script") &&
                         tb.currentElementIs(
@@ -2007,10 +1987,7 @@ public enum class HtmlTreeBuilderState {
             return true
         }
 
-        public fun processAsHtml(
-            t: Token,
-            tb: HtmlTreeBuilder,
-        ): Boolean {
+        public fun processAsHtml(t: Token, tb: HtmlTreeBuilder): Boolean {
             return tb.state()!!.process(t, tb)
         }
     },
@@ -2242,24 +2219,33 @@ public enum class HtmlTreeBuilderState {
             return false
         }
 
-        private fun handleRcData(
-            startTag: Token.StartTag,
-            tb: HtmlTreeBuilder,
-        ) {
+        private fun handleRcData(startTag: Token.StartTag, tb: HtmlTreeBuilder) {
             tb.tokeniser!!.transition(TokeniserState.Rcdata)
             tb.markInsertionMode()
             tb.transition(Text)
             tb.insertElementFor(startTag)
         }
 
-        private fun handleRawtext(
-            startTag: Token.StartTag,
-            tb: HtmlTreeBuilder,
-        ) {
+        private fun handleRawtext(startTag: Token.StartTag, tb: HtmlTreeBuilder) {
             tb.tokeniser!!.transition(TokeniserState.Rawtext)
             tb.markInsertionMode()
             tb.transition(Text)
             tb.insertElementFor(startTag)
+        }
+
+        fun mergeAttributes(source: Token.StartTag, dest: Element) {
+            if (!source.hasAttributes()) return
+
+            for (attr in source.attributes!!) { // only iterates public attributes
+                val destAttrs = dest.attributes()
+                if (!destAttrs.hasKey(attr.key)) {
+                    val range = attr.sourceRange() // need to grab range before its parent changes
+                    destAttrs.put(attr)
+                    if (source.trackSource) { // copy the attribute range
+                        destAttrs.sourceRange(attr.key, range)
+                    }
+                }
+            }
         }
     }
 }

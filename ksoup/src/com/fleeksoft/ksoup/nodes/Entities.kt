@@ -38,6 +38,9 @@ public object Entities {
     private val multipoints: HashMap<String, String> =
         HashMap<String, String>() // name -> multiple character references
 
+    private val BaseCount = 106
+    private val baseSorted = ArrayList<String>(BaseCount) // names sorted longest first, for prefix matching
+
     // cache the last used fallback encoder to save recreating on every use
     private val LocalEncoder = ThreadLocal<CharsetEncoder?> { null }
 
@@ -104,6 +107,19 @@ public object Entities {
             return 1
         }
         return 0
+    }
+
+    /**
+     * Finds the longest base named entity that is a prefix of the input. That is, input "notit" would return "not".
+     *
+     * @return longest entity name that is a prefix of the input, or "" if no entity matches
+     */
+    fun findPrefix(input: String): String {
+        for (name in baseSorted) {
+            if (input.startsWith(name)) return name
+        }
+        return emptyName
+        // if performance critical, could consider using a Trie instead of a scan
     }
 
     /**
@@ -397,6 +413,7 @@ public object Entities {
     }
 
     public enum class EscapeMode(file: String, size: Int) {
+
         /**
          * Restricted entities suitable for XHTML output: lt, gt, amp, and quot only.
          */
@@ -438,6 +455,13 @@ public object Entities {
                 if (index < nameVals.size - 1 && codeKeys[index + 1] == codepoint) nameVals[index + 1]!! else nameVals[index]!!
             } else {
                 emptyName
+            }
+        }
+
+        companion object {
+            init {
+                baseSorted.addAll(base.nameKeys.mapNotNull { it })
+                baseSorted.sortWith { a, b -> b.length - a.length }
             }
         }
     }
