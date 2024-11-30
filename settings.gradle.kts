@@ -19,7 +19,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         mavenLocal()
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
     }
 }
 
@@ -33,7 +32,7 @@ include("ksoup-okio")
 include("ksoup-korlibs")
 include("ksoup-network-korlibs")
 include("ksoup-test")
-//include("ksoup-benchmark")
+include("ksoup-benchmark")
 
 //include("sample:shared", "sample:desktop")
 //include("sample:android", "sample:ios")
