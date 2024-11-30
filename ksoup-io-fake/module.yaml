@@ -12,3 +12,4 @@ aliases:
 
 dependencies:
   - ../ksoup-io: exported
+#  - com.fleeksoft.ksoup:ksoup-io:0.3.0-alpha3: exported

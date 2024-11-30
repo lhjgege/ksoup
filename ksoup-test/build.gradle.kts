@@ -8,14 +8,17 @@ kotlin {
             dependencies {
                 when (libBuildType) {
                     "kotlinx" -> {
+//                        implementation("com.fleeksoft.ksoup:ksoup-kotlinx:${libs.versions.libraryVersion.get()}")
                         implementation(project(":ksoup-kotlinx"))
                     }
 
                     "korlibs" -> {
+//                        implementation("com.fleeksoft.ksoup:ksoup-korlibs:${libs.versions.libraryVersion.get()}")
                         implementation(project(":ksoup-korlibs"))
                     }
 
                     "okio" -> {
+//                        implementation("com.fleeksoft.ksoup:ksoup-okio:${libs.versions.libraryVersion.get()}")
                         implementation(project(":ksoup-okio"))
                     }
 
