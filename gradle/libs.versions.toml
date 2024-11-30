@@ -54,8 +54,8 @@ kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-
 fleeksoft-io = { module = "com.fleeksoft.io:io", version.ref = "fleeksoft-io" }
 fleeksoft-io-kotlinx = { module = "com.fleeksoft.io:kotlinx-io", version.ref = "fleeksoft-io" }
 fleeksoft-io-okio = { module = "com.fleeksoft.io:okio", version.ref = "fleeksoft-io" }
-fleeksoft-charset = { module = "com.fleeksoft.charset:charset", version.ref = "fleeksoft-charset" }
-fleeksoft-charset-ext = { module = "com.fleeksoft.charset:charset-ext", version.ref = "fleeksoft-charset" }
+fleeksoft-charset = { module = "com.fleeksoft.charset:charset", version.ref = "fleeksoft-io" }
+fleeksoft-charset-ext = { module = "com.fleeksoft.charset:charset-ext", version.ref = "fleeksoft-io" }
 
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
