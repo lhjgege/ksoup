@@ -51,6 +51,7 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okio-nodefilesystem = { module = "com.squareup.okio:okio-nodefilesystem", version.ref = "okio" }
 kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark" }
+fleeksoft-io-core = { module = "com.fleeksoft.io:io-core", version.ref = "fleeksoft-io" }
 fleeksoft-io = { module = "com.fleeksoft.io:io", version.ref = "fleeksoft-io" }
 fleeksoft-io-kotlinx = { module = "com.fleeksoft.io:kotlinx-io", version.ref = "fleeksoft-io" }
 fleeksoft-io-okio = { module = "com.fleeksoft.io:okio", version.ref = "fleeksoft-io" }
