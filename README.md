@@ -2,7 +2,7 @@
 
 **Ksoup** is a Kotlin Multiplatform library for working with real-world HTML and XML. It's a port of the renowned Java library, **jsoup**, and offers an easy-to-use API for URL fetching, data parsing, extraction, and manipulation using DOM and CSS selectors.
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/com.fleeksoft.ksoup/ksoup.svg)](https://central.sonatype.com/artifact/com.fleeksoft.ksoup/ksoup)
 
@@ -140,7 +140,7 @@ In this example, `Ksoup.parseGetRequest` fetches and parses HTML content from Wi
 #### For further documentation, please check here: [Jsoup](https://jsoup.org/)
 
 ### Ksoup vs. Jsoup Benchmarks: Parsing & Selecting 448KB HTML File [test.tx](https://github.com/fleeksoft/ksoup/blob/develop/ksoup-test/testResources/test.txt)
-![Ksoup vs Jsoup](performance1.png)
+![Ksoup vs Jsoup](benchmark1.png)
 
 ## Open source
 Ksoup is an open source project, a Kotlin Multiplatform port of jsoup, distributed under the Apache License, Version 2.0. The source code of Ksoup is available on [GitHub](https://github.com/fleeksoft/ksoup).
