@@ -71,6 +71,8 @@ Ksoup published in four variants. Pick the one that suits your needs and start b
    implementation("com.fleeksoft.ksoup:ksoup-network-ktor2:<version>")
     ```
 
+#### Ksoup supports [Charsets](https://github.com/fleeksoft/fleeksoft-io/blob/main/CharsetsReadme.md)
+- Standard charsets are already supported by **Ksoup IO**, but for extended charsets, plesae add `com.fleeksoft.charset:charset-ext`, For more details, visit the [Charsets Documentation](https://github.com/fleeksoft/fleeksoft-io/blob/main/CharsetsReadme.md)
 
 ### Parsing HTML from a String with Ksoup
 For API documentation you can check [Jsoup](https://jsoup.org/). Most of the APIs work without any changes.
