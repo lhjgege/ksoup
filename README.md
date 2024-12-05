@@ -38,6 +38,7 @@ Ksoup published in four variants. Pick the one that suits your needs and start b
     ```
 2. **This variant use [kotlinx-io](https://github.com/Kotlin/kotlinx-io) for I/O and [Ktor 3](https://github.com/ktorio/ktor) for networking**
    ```kotlin
+   // Ksoup.parseFile, Ksoup.parseSource
    implementation("com.fleeksoft.ksoup:ksoup-kotlinx:<version>")
    
     // Optional: Include only if you need to use network request functions such as
@@ -47,6 +48,7 @@ Ksoup published in four variants. Pick the one that suits your needs and start b
 
 3. **This variant use [korlibs-io](https://github.com/korlibs/korlibs-io) for I/O and networking**
    ```kotlin
+   // Ksoup.parseFile, Ksoup.parseStream
    implementation("com.fleeksoft.ksoup:ksoup-korlibs:<version>")
 
     // Optional: Include only if you need to use network request functions such as
@@ -56,7 +58,8 @@ Ksoup published in four variants. Pick the one that suits your needs and start b
 
 4. **This variant use [kotlinx-io](https://github.com/Kotlin/kotlinx-io) for I/O and [Ktor 2](https://github.com/ktorio/ktor) for networking**
    ```kotlin
-   implementation("com.fleeksoft.ksoup:ksoup-ktor2:<version>")
+   // Ksoup.parseFile, Ksoup.parseSource
+   implementation("com.fleeksoft.ksoup:ksoup-kotlinx:<version>")
 
     // Optional: Include only if you need to use network request functions such as
     // Ksoup.parseGetRequest, Ksoup.parseSubmitRequest, and Ksoup.parsePostRequest
@@ -103,6 +106,11 @@ headlines.forEach { headline: Element ->
 }
 ```
 
+### Parsing XML
+```kotlin
+    val doc: Document = Ksoup.parse(xml, parser = Parser = Parser.xmlParser())
+```
+
 ### Parsing Metadata from Website
 ```kotlin
 //Please note that the com.fleeksoft.ksoup:ksoup-network library is required for Ksoup.parseGetRequest.
@@ -122,20 +130,25 @@ println("twitterDescription: ${metadata.twitterDescription}")
 
 In this example, `Ksoup.parseGetRequest` fetches and parses HTML content from Wikipedia, extracting and printing news headlines and their corresponding links.
 ### Ksoup Public functions
-  - Ksoup.parse
-  - Ksoup.parseFile
-  - Ksoup.clean
-  - Ksoup.isValid
+  - **Ksoup.parse(html: String, baseUri: String = ""): Document**
+  - **Ksoup.parse(html: String, parser: Parser, baseUri: String = ""): Document**
+  - **Ksoup.clean( bodyHtml: String, safelist: Safelist = Safelist.relaxed(), baseUri: String = "", outputSettings: Document.OutputSettings? = null): String**
+  - **Ksoup.isValid(bodyHtml: String, safelist: Safelist = Safelist.relaxed()): Boolean**
+### Ksoup I/O Public functions
+  - **Ksoup.parseInput(input: InputStream, baseUri: String, charsetName: String? = null, parser: Parser = Parser.htmlParser())** from (ksoup-io, ksoup-okio, ksoup-kotlinx, ksoup-korlibs)
+  - **Ksoup.parseFile** from (ksoup-okio, ksoup-kotlinx, ksoup-korlibs)
+  - **Ksoup.parseSource** from (ksoup-okio, ksoup-kotlinx)
+  - **Ksoup.parseStream** from (ksoup-korlibs)
 
 ### Ksoup Network Public functions
 - Suspend functions
-    - Ksoup.parseGetRequest
-    - Ksoup.parseSubmitRequest
-    - Ksoup.parsePostRequest
+    - **Ksoup.parseGetRequest**
+    - **Ksoup.parseSubmitRequest**
+    - **Ksoup.parsePostRequest**
 - Blocking functions
-  - Ksoup.parseGetRequestBlocking
-  - Ksoup.parseSubmitRequestBlocking
-  - Ksoup.parsePostRequestBlocking
+  - **Ksoup.parseGetRequestBlocking**
+  - **Ksoup.parseSubmitRequestBlocking**
+  - **Ksoup.parsePostRequestBlocking**
 
 #### For further documentation, please check here: [Jsoup](https://jsoup.org/)
 
