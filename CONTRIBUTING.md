@@ -16,9 +16,8 @@ Keep in mind that maintainers will have to support the code resulting from your 
 familiarize yourself with the following guidelines:
 
 * All development (both new features and bug fixes) should be performed in the `develop` branch.
-    * The `main` branch hosts the sources of the most recently released version.
-    * Base your pull requests against the `develop` branch.
-    * The `develop` branch is merged into the `main` branch during releases.
+    * The `release-*` branch hosts the sources of the most recently released version.
+    * Base your pull requests against the `release` branch.
     * Ensure to [Build the project](#building) to verify that everything works and passes the tests.
 * If you are fixing a bug:
     * Write the test that reproduces the bug.
