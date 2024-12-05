@@ -31,13 +31,13 @@ public object Ksoup {
      * Parse HTML into a Document, using the provided Parser. You can provide an alternate parser, such as a simple XML
      * (non-HTML) parser.
      *
-     * @param html    HTML to parse
+     * @param html HTML to parse
      * @param baseUri The URL where the HTML was retrieved from. Used to resolve relative URLs to absolute URLs, that occur
      * before the HTML declares a `<base href>` tag.
      * @param parser alternate [parser][Parser.xmlParser] to use.
      * @return sane HTML
      */
-    public fun parse(html: String, parser: Parser, baseUri: String = ""): Document {
+    public fun parse(html: String, parser: Parser = Parser.htmlParser(), baseUri: String = ""): Document {
         return parser.parseInput(html, baseUri)
     }
 
@@ -71,7 +71,7 @@ public object Ksoup {
      */
     public fun clean(
         bodyHtml: String,
-        safelist: Safelist,
+        safelist: Safelist = Safelist.relaxed(),
         baseUri: String = "",
         outputSettings: Document.OutputSettings? = null
     ): String {
@@ -107,10 +107,7 @@ public object Ksoup {
      * @return true if no tags or attributes were removed; false otherwise
      * @see .clean
      */
-    public fun isValid(
-        bodyHtml: String,
-        safelist: Safelist,
-    ): Boolean {
+    public fun isValid(bodyHtml: String, safelist: Safelist = Safelist.relaxed()): Boolean {
         return Cleaner(safelist).isValidBodyHtml(bodyHtml)
     }
 
