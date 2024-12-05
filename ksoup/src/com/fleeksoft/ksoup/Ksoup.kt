@@ -41,6 +41,17 @@ public object Ksoup {
         return parser.parseInput(html, baseUri)
     }
 
+    /**
+     * Parse XML into a Document
+     *
+     * @param xml XML to parse
+     * @param baseUri The URL where the HTML was retrieved from. Used to resolve relative URLs to absolute URLs
+     * @return Document
+     */
+    public fun parseXml(xml: String, baseUri: String = ""): Document {
+        return Parser.xmlParser().parseInput(xml, baseUri)
+    }
+
 
     /**
      * Parse a fragment of HTML, with the assumption that it forms the `body` of the HTML.
