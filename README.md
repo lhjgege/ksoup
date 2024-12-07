@@ -170,7 +170,7 @@ To report any issues, visit our [GitHub issues](https://github.com/fleeksoft/kso
 
 ## License
 
-    Copyright 2024 Sabeeh Ul Hussnain
+    Copyright 2024 FLEEK SOFT
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
