@@ -101,7 +101,7 @@ class MicroAmper(val project: Project) {
     fun getKotlinBasePlatform(platform: String): String =
         platform.removeSuffix("X64").removeSuffix("X86").removeSuffix("Arm64").removeSuffix("Arm32").removeSuffix("Simulator").removeSuffix("Device")
             .also {
-                check(it.all { it.isLowerCase() && !it.isDigit() })
+                check(it.all { !it.isDigit() })
             }
 
     data class Dep(val path: String, val exported: Boolean, val test: Boolean, val platform: String, val compileOnly: Boolean) {
@@ -302,6 +302,10 @@ class MicroAmper(val project: Project) {
                 "watchosDeviceArm64" -> kotlin.watchosDeviceArm64()
                 "watchosSimulatorArm64" -> kotlin.watchosSimulatorArm64()
                 "mingwX64" -> kotlin.mingwX64()
+                "androidNativeX86" -> kotlin.androidNativeX86()
+                "androidNativeX64" -> kotlin.androidNativeX64()
+                "androidNativeArm32" -> kotlin.androidNativeArm32()
+                "androidNativeArm64" -> kotlin.androidNativeArm64()
             }
         }
 
