@@ -132,6 +132,7 @@ In this example, `Ksoup.parseGetRequest` fetches and parses HTML content from Wi
 ### Ksoup Public functions
   - **Ksoup.parse(html: String, baseUri: String = ""): Document**
   - **Ksoup.parse(html: String, parser: Parser, baseUri: String = ""): Document**
+  - **Ksoup.parse(reader: Reader, parser: Parser, baseUri: String = ""): Document**
   - **Ksoup.clean( bodyHtml: String, safelist: Safelist = Safelist.relaxed(), baseUri: String = "", outputSettings: Document.OutputSettings? = null): String**
   - **Ksoup.isValid(bodyHtml: String, safelist: Safelist = Safelist.relaxed()): Boolean**
 ### Ksoup I/O Public functions
