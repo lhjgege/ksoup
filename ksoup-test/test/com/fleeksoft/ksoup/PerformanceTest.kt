@@ -1,6 +1,5 @@
 package com.fleeksoft.ksoup
 
-import korlibs.io.file.std.uniVfs
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Clock
 import kotlin.test.Ignore
@@ -11,7 +10,7 @@ class PerformanceTest {
     @Test
     @Ignore
     fun testFileParse() = runTest {
-        val data = TestHelper.getResourceAbsolutePath("test.txt").uniVfs.readString()
+        val data = TestHelper.readResource("test.txt").readAllBytes().decodeToString()
         val timestamp = Clock.System.now().toEpochMilliseconds()
         val doc = Ksoup.parse(data)
         val selectTimeStamp = Clock.System.now().toEpochMilliseconds()
