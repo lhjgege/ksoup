@@ -18,8 +18,8 @@ korlibs = "6.0.1"
 mavenPublish = "0.30.0"
 
 stately = "2.1.0"
-jsoup = "1.18.2"
-fleeksoft-io = "0.0.2"
+jsoup = "1.18.3"
+fleeksoft-io = "0.0.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
