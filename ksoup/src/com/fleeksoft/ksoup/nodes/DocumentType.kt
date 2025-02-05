@@ -12,7 +12,7 @@ import com.fleeksoft.ksoup.nodes.Document.OutputSettings.Syntax
  */
 public class DocumentType(private val name: String, private val publicId: String, private val systemId: String) : LeafNode(name) {
     init {
-        attr(Name, name)
+        attr(NameKey, name)
         attr(PublicId, publicId)
         attr(SystemId, systemId)
         updatePubSyskey()
@@ -35,7 +35,7 @@ public class DocumentType(private val name: String, private val publicId: String
      * @return doctype name
      */
     public fun name(): String {
-        return attr(Name)
+        return attr(NameKey)
     }
 
     /**
@@ -55,7 +55,7 @@ public class DocumentType(private val name: String, private val publicId: String
     }
 
     override fun nodeName(): String {
-        return Name
+        return "#doctype"
     }
 
     override fun outerHtmlHead(
@@ -72,7 +72,7 @@ public class DocumentType(private val name: String, private val publicId: String
         } else {
             accum.append("<!DOCTYPE")
         }
-        if (has(Name)) accum.append(" ").append(attr(Name))
+        if (has(NameKey)) accum.append(" ").append(attr(NameKey))
         if (has(PubSysKey)) accum.append(" ").append(attr(PubSysKey))
         if (has(PublicId)) accum.append(" \"").append(attr(PublicId)).append('"')
         if (has(SystemId)) accum.append(" \"").append(attr(SystemId)).append('"')
@@ -98,7 +98,7 @@ public class DocumentType(private val name: String, private val publicId: String
         // todo needs a bit of a chunky cleanup. this level of detail isn't needed
         public const val PUBLIC_KEY: String = "PUBLIC"
         public const val SYSTEM_KEY: String = "SYSTEM"
-        private const val Name: String = "#doctype"
+        private const val NameKey: String = "name"
         private const val PubSysKey: String = "pubSysKey" // PUBLIC or SYSTEM
         private const val PublicId: String = "publicId"
         private const val SystemId: String = "systemId"

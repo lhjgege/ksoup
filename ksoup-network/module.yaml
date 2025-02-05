@@ -1,12 +1,13 @@
 product:
   type: lib
-  platforms: [ jvm, js, wasm, android, linuxX64, linuxArm64, tvosArm64, tvosX64, tvosSimulatorArm64, macosX64, macosArm64, iosArm64, iosSimulatorArm64, iosX64, mingwX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64 ]
+  platforms: [ jvm, js, wasm, android, linuxX64, linuxArm64, tvosArm64, tvosX64, tvosSimulatorArm64, macosX64, macosArm64, iosArm64, iosSimulatorArm64, iosX64, mingwX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, androidNativeX86, androidNativeX64, androidNativeArm32, androidNativeArm64 ]
 
 apply: [ ../common.module-template.yaml ]
 
 aliases:
   - jvmAndAndroid: [ jvm, android ]
-  - concurrent: [ jvm, android, linuxX64, linuxArm64, tvosArm64, tvosX64, tvosSimulatorArm64, macosX64, macosArm64, iosArm64, iosSimulatorArm64, iosX64, mingwX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64 ]
+  - concurrent: [ jvm, android, linuxX64, linuxArm64, tvosArm64, tvosX64, tvosSimulatorArm64, macosX64, macosArm64, iosArm64, iosSimulatorArm64, iosX64, mingwX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, androidNativeX86, androidNativeX64, androidNativeArm32, androidNativeArm64 ]
+  - androidNative: [ androidNativeX86, androidNativeX64, androidNativeArm32, androidNativeArm64 ]
 
 repositories:
   - mavenLocal
@@ -32,6 +33,9 @@ dependencies@mingw:
   - $libs.ktor.client.win
 
 dependencies@linux:
+  - $libs.ktor.client.cio
+
+dependencies@androidNative:
   - $libs.ktor.client.cio
 
 test-dependencies:

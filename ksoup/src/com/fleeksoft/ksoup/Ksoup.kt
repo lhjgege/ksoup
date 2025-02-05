@@ -1,5 +1,6 @@
 package com.fleeksoft.ksoup
 
+import com.fleeksoft.io.Reader
 import com.fleeksoft.ksoup.model.MetaData
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.nodes.Element
@@ -39,6 +40,20 @@ public object Ksoup {
      */
     public fun parse(html: String, parser: Parser = Parser.htmlParser(), baseUri: String = ""): Document {
         return parser.parseInput(html, baseUri)
+    }
+
+    /**
+     * Parse HTML/XML from Reader into a Document, using the provided Parser. You can provide an alternate parser, such as a simple XML
+     * (non-HTML) parser.
+     *
+     * @param reader Reader to parse
+     * @param parser alternate [parser][Parser.xmlParser] to use.
+     * @param baseUri The URL where the HTML was retrieved from. Used to resolve relative URLs to absolute URLs, that occur
+     * before the HTML declares a `<base href>` tag.
+     * @return sane HTML
+     */
+    public fun parse(reader: Reader, parser: Parser = Parser.htmlParser(), baseUri: String = ""): Document {
+        return parser.parseInput(reader, baseUri)
     }
 
     /**

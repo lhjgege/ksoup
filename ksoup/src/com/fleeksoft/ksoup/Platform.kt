@@ -2,6 +2,7 @@ package com.fleeksoft.ksoup
 
 public enum class PlatformType {
     ANDROID,
+    ANDROID_NATIVE,
     JVM,
     IOS,
     LINUX,

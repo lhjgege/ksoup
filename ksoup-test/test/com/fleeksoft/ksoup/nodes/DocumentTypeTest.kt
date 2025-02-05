@@ -65,4 +65,23 @@ class DocumentTypeTest {
     private fun xmlOutput(`in`: String): String {
         return Ksoup.parse(html = `in`, baseUri = "", parser = Parser.xmlParser()).childNode(0).outerHtml()
     }
+
+    @Test
+    fun attributes() {
+        var doc = Ksoup.parse("<!DOCTYPE html>")
+        var doctype = doc.documentType()!!
+        assertEquals("#doctype", doctype.nodeName())
+        assertEquals("html", doctype.name())
+        assertEquals("html", doctype.attr("name"))
+        assertEquals("", doctype.publicId())
+        assertEquals("", doctype.systemId())
+
+        doc = Ksoup.parse("<!DOCTYPE notHtml PUBLIC \"--public\" \"--system\">")
+        doctype = doc.documentType()!!
+        assertEquals("#doctype", doctype.nodeName())
+        assertEquals("nothtml", doctype.name())
+        assertEquals("nothtml", doctype.attr("name"))
+        assertEquals("--public", doctype.publicId())
+        assertEquals("--system", doctype.systemId())
+    }
 }

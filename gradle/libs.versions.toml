@@ -1,10 +1,10 @@
 [versions]
 agp = "8.7.2"
-kotlin = "2.1.0"
+kotlin = "2.1.10"
 compileSdk = "35"
 minSdk = "21"
-libraryVersion = "0.2.1"
-ktor = "3.0.1"
+libraryVersion = "0.2.2"
+ktor = "3.0.3"
 ktor2 = "2.3.13"
 coroutines = "1.9.0"
 kotlinxDatetime = "0.6.1"
@@ -18,8 +18,8 @@ korlibs = "6.0.1"
 mavenPublish = "0.30.0"
 
 stately = "2.1.0"
-jsoup = "1.18.2"
-fleeksoft-io = "0.0.2"
+jsoup = "1.18.3"
+fleeksoft-io = "0.0.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
